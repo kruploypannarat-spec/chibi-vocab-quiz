@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Chibi Vocab" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#FF8FB1" />
+  <title>Mochi Vocab Quest — เกม Quiz คำศัพท์จิบิ 280 คำ</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Mali:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #523743;
+      --ink-soft: #7E5E6D;
+      --pink: #FF85AE;
+      --pink-dark: #E25E8D;
+      --pink-soft: #FFE4EF;
+      --mint: #5BD6B2;
+      --mint-dark: #32A987;
+      --mint-soft: #DFF9F0;
+      --sky: #70C6FF;
+      --sky-dark: #3B9CE0;
+      --sky-soft: #E3F4FF;
+      --butter: #FFD166;
+      --butter-dark: #DDA428;
+      --butter-soft: #FFF5D6;
+      --lavender: #B899FF;
+      --lavender-dark: #8663DB;
+      --lavender-soft: #F0E8FF;
+      --coral: #FF7B7B;
+      --coral-dark: #D94F4F;
+      --coral-soft: #FFE5E5;
+      --card: #FFFFFF;
+      --bg1: #FFF5FA;
+      --bg2: #FFFBF0;
+      --bg3: #EEF8FF;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Mali', 'Fredoka', 'Hiragino Maru Gothic ProN', 'Thonburi', system-ui, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(155deg, var(--bg1) 0%, var(--bg2) 52%, var(--bg3) 100%);
+      touch-action: manipulation;
+    }
+
+    /* Cute floating pastel background pattern */
+    .bg-decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+      background-image:
+        radial-gradient(rgba(255, 143, 177, 0.16) 2px, transparent 2px),
+        radial-gradient(rgba(112, 198, 255, 0.14) 2px, transparent 2px);
+      background-size: 38px 38px;
+      background-position: 0 0, 19px 19px;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.78);
+      border-radius: 999px;
+      filter: drop-shadow(0 6px 12px rgba(255, 165, 195, 0.16));
+      animation: drift 24s ease-in-out infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .cloud.c1 { width: 120px; height: 42px; top: 7%; left: 5%; animation-duration: 26s; }
+    .cloud.c1::before { width: 52px; height: 52px; top: -24px; left: 18px; }
+    .cloud.c1::after { width: 64px; height: 64px; top: -30px; right: 18px; }
+
+    .cloud.c2 { width: 145px; height: 48px; top: 12%; right: 6%; animation-duration: 30s; animation-delay: -9s; }
+    .cloud.c2::before { width: 62px; height: 62px; top: -28px; left: 22px; }
+    .cloud.c2::after { width: 72px; height: 72px; top: -34px; right: 20px; }
+
+    .cloud.c3 { width: 110px; height: 38px; bottom: 9%; left: 8%; animation-duration: 28s; animation-delay: -14s; }
+    .cloud.c3::before { width: 46px; height: 46px; top: -20px; left: 16px; }
+    .cloud.c3::after { width: 56px; height: 56px; top: -26px; right: 16px; }
+
+    @keyframes drift {
+      0%, 100% { transform: translateX(0px) translateY(0px); }
+      50% { transform: translateX(22px) translateY(-8px); }
+    }
+
+    /* App Container */
+    #app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100dvh;
+      padding: calc(10px + var(--safe-top)) calc(14px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(14px + var(--safe-left));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 1040px;
+      height: 100%;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .screen.active {
+      display: flex;
+      animation: fadePop 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes fadePop {
+      from { opacity: 0; transform: scale(0.97) translateY(6px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Chibi Card & Tactile Buttons */
+    .sticker-card {
+      background: var(--card);
+      border: 3.5px solid var(--ink);
+      border-radius: 28px;
+      box-shadow: 0 7px 0 rgba(82, 55, 67, 0.14), 0 12px 26px rgba(255, 133, 174, 0.14);
+    }
+
+    .btn {
+      font-family: inherit;
+      font-weight: 700;
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      color: var(--ink);
+      background: #FFFFFF;
+      box-shadow: 0 5px 0 var(--ink);
+      padding: 10px 18px;
+      font-size: 1rem;
+      line-height: 1.2;
+      position: relative;
+    }
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--ink);
+    }
+    .btn-pink { background: linear-gradient(180deg, #FF9EC0 0%, var(--pink) 100%); color: #FFFFFF; text-shadow: 0 1.5px 0 rgba(82, 55, 67, 0.35); }
+    .btn-mint { background: linear-gradient(180deg, #7BE6C6 0%, var(--mint) 100%); color: #244D40; }
+    .btn-sky { background: linear-gradient(180deg, #98D7FF 0%, var(--sky) 100%); color: #1F4463; }
+    .btn-butter { background: linear-gradient(180deg, #FFE18A 0%, var(--butter) 100%); color: #5C3D0A; }
+    .btn-lavender { background: linear-gradient(180deg, #D1BBFF 0%, var(--lavender) 100%); color: #3D2470; }
+    .btn-sm { padding: 7px 13px; font-size: 0.9rem; border-radius: 15px; box-shadow: 0 3.5px 0 var(--ink); border-width: 2.5px; }
+    .btn-sm:active { transform: translateY(3px); box-shadow: 0 0.5px 0 var(--ink); }
+    .btn-icon { width: 44px; height: 44px; padding: 0; border-radius: 15px; font-size: 1.2rem; box-shadow: 0 4px 0 var(--ink); }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px 10px;
+      flex-shrink: 0;
+    }
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      box-shadow: 0 4px 0 rgba(82, 55, 67, 0.14);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    /* iPad Safari Add-to-Home-Screen Banner */
+    .ipad-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 18px;
+      border: 2.5px solid var(--ink);
+      background: linear-gradient(90deg, var(--butter-soft) 0%, var(--pink-soft) 100%);
+      font-size: 0.88rem;
+      font-weight: 700;
+      box-shadow: 0 4px 0 rgba(82, 55, 67, 0.12);
+    }
+    .ipad-banner.show { display: flex; }
+
+    /* Home Screen Layout */
+    .home-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 4px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero-card {
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: 185px 1fr;
+      align-items: center;
+      gap: 18px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF3F8 58%, #EEF8FF 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-mascot-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-mascot-wrap svg {
+      width: 175px;
+      height: 175px;
+      filter: drop-shadow(0 8px 14px rgba(255, 133, 174, 0.28));
+    }
+
+    .hero-info h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.45rem, 2.8vw, 2.05rem);
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .hero-info h1 .accent {
+      color: var(--pink-dark);
+      font-family: 'Fredoka', 'Mali', sans-serif;
+    }
+    .hero-sub {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 2.5px solid var(--ink);
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: #FFF;
+    }
+    .stat-chip.pink { background: var(--pink-soft); }
+    .stat-chip.mint { background: var(--mint-soft); }
+    .stat-chip.butter { background: var(--butter-soft); }
+    .stat-chip.sky { background: var(--sky-soft); }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .hero-cta-row .btn {
+      font-size: 1.04rem;
+      padding: 12px 20px;
+    }
+
+    /* Mode Sections */
+    .section-card {
+      padding: 14px 18px 16px;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .section-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    /* CEFR Filter Pills */
+    .cefr-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .cefr-btn {
+      flex-direction: column;
+      padding: 12px 10px;
+      gap: 4px;
+      border-radius: 20px;
+    }
+    .cefr-tag {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .cefr-count {
+      font-size: 0.82rem;
+      opacity: 0.85;
+    }
+
+    /* Stages Grid (14 Stages x 20 Words = 280 Words) */
+    .stages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 10px;
+    }
+    .stage-tile {
+      font-family: inherit;
+      background: #FFFFFF;
+      border: 3px solid var(--ink);
+      border-radius: 20px;
+      padding: 10px 10px 9px;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 4.5px 0 var(--ink);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+    }
+    .stage-tile:active {
+      transform: translateY(3.5px);
+      box-shadow: 0 1px 0 var(--ink);
+    }
+    .stage-tile.cleared {
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--mint-soft) 100%);
+    }
+    .stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+    .stage-range {
+      font-family: 'Fredoka', 'Mali', sans-serif;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stage-stars {
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* QUIZ SCREEN (Fits 100dvh cleanly on iPad Landscape & Portrait!) */
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 2px 8px;
+      flex-shrink: 0;
+    }
+    .progress-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0 4px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 16px;
+      background: #FFFFFF;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      overflow: hidden;
+      padding: 2px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--butter) 55%, var(--mint) 100%);
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hud-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .hud-pill {
+      background: #FFFFFF;
+      border: 2.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 0 rgba(82, 55, 67, 0.14);
+    }
+    .hud-pill.combo {
+      background: var(--butter-soft);
+      animation: pulsePop 0.35s ease;
+    }
+
+    @keyframes pulsePop {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    .quiz-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+      padding-bottom: 4px;
+    }
+
+    /* Prompt Card with Chibi Buddy */
+    .word-card {
+      flex: 1;
+      min-height: 0;
+      padding: 16px 22px;
+      display: grid;
+      grid-template-columns: 168px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF8FB 65%, #F2F9FF 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chibi-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .chibi-box svg {
+      width: 152px;
+      height: 152px;
+      filter: drop-shadow(0 6px 10px rgba(255, 133, 174, 0.24));
+    }
+
+    .speech-bubble {
+      background: #FFFFFF;
+      border: 2.5px solid var(--ink);
+      border-radius: 16px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-top: -6px;
+      text-align: center;
+      box-shadow: 0 3px 0 rgba(82, 55, 67, 0.12);
+      max-width: 165px;
+    }
+
+    .word-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .word-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 2.5px solid var(--ink);
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+    .badge-A1 { background: #DFF9F0; color: #1A6B52; }
+    .badge-A2 { background: #E3F4FF; color: #19568A; }
+    .badge-B1 { background: #FFF2C9; color: #7C4F05; }
+    .badge-B2 { background: #F0E6FF; color: #4E278E; }
+    .badge-pos { background: #FFF0F5; color: #8A2B52; font-family: 'Fredoka', sans-serif; }
+    .badge-num { background: #FFFFFF; color: var(--ink-soft); }
+
+    .word-text-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .word-text {
+      font-family: 'Fredoka', 'Mali', sans-serif;
+      font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      text-shadow: 0 3px 0 rgba(255, 133, 174, 0.26);
+    }
+    .word-text sup {
+      font-size: 0.45em;
+      color: var(--pink-dark);
+      margin-left: 2px;
+    }
+
+    .speak-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid var(--ink);
+      background: var(--butter-soft);
+      box-shadow: 0 4px 0 var(--ink);
+      font-size: 1.35rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .speak-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--ink);
+    }
+
+    .prompt-hint {
+      font-size: 0.96rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+
+    /* Choices a b c d (2x2 big iPad touch buttons) */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .choice-btn {
+      font-family: inherit;
+      background: #FFFFFF;
+      border: 3.5px solid var(--ink);
+      border-radius: 22px;
+      padding: 14px 16px;
+      min-height: 76px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      box-shadow: 0 6px 0 var(--ink);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.18s ease, border-color 0.18s ease;
+      position: relative;
+    }
+    .choice-btn:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--ink);
+    }
+    .choice-btn:disabled {
+      cursor: default;
+    }
+
+    .choice-letter {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 2.5px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      text-transform: lowercase;
+    }
+    .choice-btn[data-opt="a"] .choice-letter { background: var(--pink-soft); color: #A62F5B; }
+    .choice-btn[data-opt="b"] .choice-letter { background: var(--sky-soft); color: #19568A; }
+    .choice-btn[data-opt="c"] .choice-letter { background: var(--butter-soft); color: #7C4F05; }
+    .choice-btn[data-opt="d"] .choice-letter { background: var(--lavender-soft); color: #4E278E; }
+
+    .choice-text {
+      font-size: clamp(1.02rem, 2.0vw, 1.24rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .choice-btn.correct {
+      background: linear-gradient(180deg, #E8FFF6 0%, #B8F5DF 100%);
+      border-color: #1F7A5D;
+      box-shadow: 0 5px 0 #1F7A5D;
+      animation: bounceCorrect 0.35s ease;
+    }
+    .choice-btn.correct .choice-letter {
+      background: var(--mint);
+      color: #FFFFFF;
+      border-color: #1F7A5D;
+    }
+    .choice-btn.wrong {
+      background: linear-gradient(180deg, #FFF0F0 0%, #FFC9C9 100%);
+      border-color: #B83A3A;
+      box-shadow: 0 5px 0 #B83A3A;
+      animation: shakeWrong 0.35s ease;
+    }
+    .choice-btn.wrong .choice-letter {
+      background: var(--coral);
+      color: #FFFFFF;
+      border-color: #B83A3A;
+    }
+    .choice-btn.dim {
+      opacity: 0.55;
+    }
+
+    @keyframes bounceCorrect {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shakeWrong {
+      0%, 100% { transform: translateX(0); }
+      22% { transform: translateX(-7px); }
+      44% { transform: translateX(7px); }
+      66% { transform: translateX(-4px); }
+      88% { transform: translateX(4px); }
+    }
+
+    /* Bottom Feedback Bar */
+    .feedback-bar {
+      min-height: 62px;
+      border-radius: 22px;
+      border: 3px solid var(--ink);
+      background: #FFFFFF;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 5px 0 rgba(82, 55, 67, 0.14);
+      transition: background 0.2s ease;
+    }
+    .feedback-bar.is-correct { background: var(--mint-soft); border-color: #1F7A5D; }
+    .feedback-bar.is-wrong { background: var(--coral-soft); border-color: #B83A3A; }
+    .feedback-msg {
+      font-size: 0.98rem;
+      font-weight: 700;
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feedback-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .toggle-auto {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      cursor: pointer;
+    }
+    .toggle-auto input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--pink-dark);
+      cursor: pointer;
+    }
+
+    /* RESULT SCREEN */
+    .result-wrap {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+    }
+    .result-card {
+      width: 100%;
+      max-width: 720px;
+      padding: 24px 26px;
+      text-align: center;
+      background: linear-gradient(160deg, #FFFFFF 0%, #FFF4F9 60%, #EEF9FF 100%);
+    }
+    .result-mascot svg {
+      width: 168px;
+      height: 168px;
+      filter: drop-shadow(0 8px 14px rgba(255, 133, 174, 0.3));
+    }
+    .result-stars {
+      font-size: 2.3rem;
+      letter-spacing: 6px;
+      margin: 4px 0 8px;
+    }
+    .result-score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+    .score-box {
+      background: #FFFFFF;
+      border: 3px solid var(--ink);
+      border-radius: 18px;
+      padding: 10px 8px;
+    }
+    .score-box .num {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--pink-dark);
+    }
+    .score-box .lbl {
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+    .wrong-review-list {
+      max-height: 150px;
+      overflow-y: auto;
+      text-align: left;
+      background: #FFFFFF;
+      border: 2.5px solid var(--ink);
+      border-radius: 18px;
+      padding: 10px 14px;
+      margin: 0 0 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 8px;
+    }
+    .wrong-chip {
+      font-size: 0.86rem;
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: var(--coral-soft);
+      border: 2px solid rgba(184, 58, 58, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* VOCAB BOOK SCREEN */
+    .book-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 190px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 18px;
+      border: 3px solid var(--ink);
+      background: #FFFFFF;
+      color: var(--ink);
+      outline: none;
+    }
+    .search-input:focus {
+      box-shadow: 0 0 0 3px var(--pink-soft);
+    }
+    .vocab-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+      gap: 10px;
+      padding: 2px 2px 16px;
+      align-content: start;
+    }
+    .vocab-item {
+      background: #FFFFFF;
+      border: 2.5px solid var(--ink);
+      border-radius: 18px;
+      padding: 10px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 3.5px 0 rgba(82, 55, 67, 0.14);
+    }
+    .vocab-item.mastered {
+      background: linear-gradient(180deg, #FFFFFF 0%, #EEFCF6 100%);
+    }
+    .vocab-left { min-width: 0; }
+    .vocab-en {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.12rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .vocab-th {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .mini-tag {
+      font-size: 0.72rem;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+      font-weight: 700;
+    }
+
+    /* MODAL (iPad Fullscreen Guide) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(58, 36, 48, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      width: 100%;
+      max-width: 520px;
+      padding: 22px;
+      background: #FFFFFF;
+      animation: fadePop 0.22s ease;
+    }
+    .modal-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.28rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ipad-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ipad-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #FFF7FB;
+      border: 2px solid var(--pink-soft);
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--pink);
+      color: #FFF;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 2px solid var(--ink);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    /* Chibi SVG animations */
+    .chibi-float { animation: chibiFloat 2.8s ease-in-out infinite; transform-origin: center; }
+    .chibi-jump { animation: chibiJump 0.55s ease-in-out infinite; transform-origin: center bottom; }
+    .chibi-wiggle { animation: chibiWiggle 0.9s ease-in-out infinite; transform-origin: center bottom; }
+    .neko-bob { animation: nekoBob 2.2s ease-in-out infinite; transform-origin: center; }
+    .sparkle-twinkle { animation: twinkle 1.6s ease-in-out infinite; transform-origin: center; }
+    .eye-blink { animation: blink 4.2s infinite; transform-origin: center; }
+
+    @keyframes chibiFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes chibiJump {
+      0%, 100% { transform: translateY(0px) scale(1, 1); }
+      40% { transform: translateY(-13px) scale(0.97, 1.04); }
+      75% { transform: translateY(0px) scale(1.03, 0.96); }
+    }
+    @keyframes chibiWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-3.5deg); }
+      75% { transform: rotate(3.5deg); }
+    }
+    @keyframes nekoBob {
+      0%, 100% { transform: translateY(0px) rotate(-3deg); }
+      50% { transform: translateY(-7px) rotate(4deg); }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.78); }
+    }
+    @keyframes blink {
+      0%, 46%, 50%, 100% { transform: scaleY(1); }
+      48% { transform: scaleY(0.1); }
+    }
+
+    /* Responsive adjustments for iPad Portrait & Mobile */
+    @media (max-width: 780px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 16px;
+        gap: 10px;
+      }
+      .hero-mascot-wrap svg { width: 138px; height: 138px; }
+      .stats-row, .hero-cta-row { justify-content: center; }
+      .cefr-grid { grid-template-columns: repeat(2, 1fr); }
+      .word-card {
+        grid-template-columns: 1fr;
+        padding: 12px 14px;
+        gap: 6px;
+      }
+      .chibi-box { flex-direction: row; gap: 10px; }
+      .chibi-box svg { width: 96px; height: 96px; }
+      .speech-bubble { margin-top: 0; max-width: 220px; }
+      .choices-grid { grid-template-columns: 1fr; gap: 9px; }
+      .choice-btn { min-height: 60px; padding: 10px 14px; }
+      .feedback-bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 12px; }
+      .feedback-controls { justify-content: space-between; }
+    }
+
+    /* Short iPad landscape height protection */
+    @media (max-height: 690px) and (min-width: 781px) {
+      .word-card { padding: 10px 18px; }
+      .chibi-box svg { width: 124px; height: 124px; }
+      .choice-btn { min-height: 64px; padding: 11px 14px; }
+      .feedback-bar { min-height: 54px; padding: 8px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decor">
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="app">
+    <!-- ==================== HOME SCREEN ==================== -->
+    <section id="screen-home" class="screen active">
+      <header class="top-bar">
+        <div class="brand-pill">
+          <span>🎀</span>
+          <span>Mochi Vocab Quest</span>
+          <span style="color:var(--pink-dark)">280 คำ</span>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-sm btn-sky" id="btn-open-book">📖 สมุดศัพท์</button>
+          <button class="btn btn-sm btn-butter" id="btn-ipad-guide">📱 เต็มจอ iPad</button>
+          <button class="btn btn-sm" id="btn-fullscreen" title="สลับเต็มจอ">⛶ เต็มจอ</button>
+          <button class="btn btn-sm" id="btn-sound" title="เปิด/ปิดเสียง">🔊 เสียงเปิด</button>
+        </div>
+      </header>
+
+      <div class="home-scroll">
+        <!-- Smart iPad Fullscreen Tip Banner (auto-shown on iPad Safari when not yet standalone) -->
+        <div class="ipad-banner" id="ipad-banner">
+          <span>📱 เปิดเต็มจอ 100% บน iPad: แตะ <strong>แชร์ (⬆️)</strong> → <strong>เพิ่มไปยังหน้าจอโฮม</strong> แล้วเปิดจากไอคอนหน้าจอโฮมได้เลย!</span>
+          <button class="btn btn-sm" id="btn-dismiss-banner" style="padding:4px 10px;">✕</button>
+        </div>
+
+        <!-- Hero Chibi Card -->
+        <div class="sticker-card hero-card">
+          <div class="hero-mascot-wrap" id="home-mascot"></div>
+          <div class="hero-info">
+            <h1>เกมส์ Quiz คำศัพท์ <span class="accent">จิบิ 280 คำ!</span> ✨</h1>
+            <p class="hero-sub">
+              ทายความหมายภาษาไทยที่ถูกต้อง (ตัวเลือก <strong>a b c d</strong>) ครบทุกคำจากตารางคำศัพท์ <strong>bed → complicated</strong> พร้อมเสียงอ่านภาษาอังกฤษและระบบจำคำที่ตอบผิด!
+            </p>
+            <div class="stats-row">
+              <span class="stat-chip pink">📚 คำศัพท์ทั้งหมด <strong id="stat-total">280</strong> คำ</span>
+              <span class="stat-chip mint">✅ จำได้แล้ว <strong id="stat-mastered">0</strong> / 280</span>
+              <span class="stat-chip butter">⭐ ดาวสะสม <strong id="stat-stars">0</strong> / 42</span>
+              <span class="stat-chip sky" id="stat-mistakes-pill">📝 คำผิดรอทบทวน <strong id="stat-mistakes">0</strong></span>
+            </div>
+            <div class="hero-cta-row">
+              <button class="btn btn-pink" id="btn-play-all-shuffle">🎮 เล่นครบทั้ง 280 คำ (สุ่ม)</button>
+              <button class="btn btn-mint" id="btn-play-all-az">🔤 เล่นครบทั้ง 280 คำ (A–Z)</button>
+              <button class="btn btn-butter" id="btn-resume-all" style="display:none;">▶️ เล่นต่อจากเดิม</button>
+              <button class="btn btn-lavender" id="btn-review-mistakes" style="display:none;">💡 ทบทวนคำที่ตอบผิด (<span id="mistake-btn-count">0</span>)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CEFR Level Quick Modes -->
+        <div class="sticker-card section-card">
+          <div class="section-head">
+            <h2 class="section-title">🌈 เลือกเล่นตามระดับคำศัพท์ (CEFR)</h2>
+            <span style="font-size:0.86rem;color:var(--ink-soft);font-weight:600;">ฝึกแยกทีละระดับก็ได้นะ~</span>
+          </div>
+          <div class="cefr-grid">
+            <button class="btn btn-mint cefr-btn" data-cefr="A1">
+              <span class="cefr-tag">A1 พื้นฐาน</span>
+              <span class="cefr-count" id="count-A1">0 คำ</span>
+            </button>
+            <button class="btn btn-sky cefr-btn" data-cefr="A2">
+              <span class="cefr-tag">A2 ระดับต้น</span>
+              <span class="cefr-count" id="count-A2">0 คำ</span>
+            </button>
+            <button class="btn btn-butter cefr-btn" data-cefr="B1">
+              <span class="cefr-tag">B1 ระดับกลาง</span>
+              <span class="cefr-count" id="count-B1">0 คำ</span>
+            </button>
+            <button class="btn btn-lavender cefr-btn" data-cefr="B2">
+              <span class="cefr-tag">B2 ท้าทาย</span>
+              <span class="cefr-count" id="count-B2">0 คำ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 14 Chibi Stages (20 Words each = 280 Words!) -->
+        <div class="sticker-card section-card">
+          <div class="section-head">
+            <h2 class="section-title">🗺️ ตะลุย 14 ด่านจิบิ (ด่านละ 20 คำ = ครบ 280 คำ)</h2>
+            <button class="btn btn-sm" id="btn-reset-progress" style="font-size:0.8rem;">🔄 รีเซ็ตสถิติ</button>
+          </div>
+          <div class="stages-grid" id="stages-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== QUIZ SCREEN ==================== -->
+    <section id="screen-quiz" class="screen">
+      <header class="quiz-top">
+        <button class="btn btn-sm" id="btn-quiz-home">🏠 หน้าหลัก</button>
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span id="quiz-mode-label">ด่านที่ 1</span>
+            <span id="quiz-counter">ข้อ 1 / 20</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="quiz-progress-fill"></div>
+          </div>
+        </div>
+        <div class="hud-pills">
+          <span class="hud-pill">🎯 <span id="hud-score">0</span></span>
+          <span class="hud-pill combo" id="hud-combo-pill">🔥 x<span id="hud-combo">0</span></span>
+          <button class="btn btn-sm btn-icon" id="btn-quiz-sound" title="เปิด/ปิดเสียง">🔊</button>
+        </div>
+      </header>
+
+      <div class="quiz-stage">
+        <!-- Word & Chibi Mascot Card -->
+        <div class="sticker-card word-card">
+          <div class="chibi-box">
+            <div id="quiz-mascot"></div>
+            <div class="speech-bubble" id="chibi-speech">เลือกความหมายให้ถูกน้า~ ✨</div>
+          </div>
+          <div class="word-main">
+            <div class="word-badges">
+              <span class="badge badge-num" id="word-index-badge">#1 / 280</span>
+              <span class="badge badge-pos" id="word-pos">n.</span>
+              <span class="badge badge-A1" id="word-level">A1</span>
+            </div>
+            <div class="word-text-row">
+              <div class="word-text" id="word-display">bed</div>
+              <button class="speak-btn" id="btn-speak" title="ฟังเสียงอ่านภาษาอังกฤษ">🔊</button>
+            </div>
+            <div class="prompt-hint">ข้อใดคือความหมายภาษาไทยที่ถูกต้องของคำนี้?</div>
+          </div>
+        </div>
+
+        <!-- 4 Choices: a b c d -->
+        <div class="choices-grid" id="choices-grid">
+          <button class="choice-btn" data-opt="a" data-idx="0">
+            <span class="choice-letter">a</span>
+            <span class="choice-text"></span>
+          </button>
+          <button class="choice-btn" data-opt="b" data-idx="1">
+            <span class="choice-letter">b</span>
+            <span class="choice-text"></span>
+          </button>
+          <button class="choice-btn" data-opt="c" data-idx="2">
+            <span class="choice-letter">c</span>
+            <span class="choice-text"></span>
+          </button>
+          <button class="choice-btn" data-opt="d" data-idx="3">
+            <span class="choice-letter">d</span>
+            <span class="choice-text"></span>
+          </button>
+        </div>
+
+        <!-- Feedback & Next Bar -->
+        <div class="feedback-bar" id="feedback-bar">
+          <div class="feedback-msg" id="feedback-msg">
+            <span>🐾</span>
+            <span>แตะเลือกตัวเลือก <strong>a, b, c</strong> หรือ <strong>d</strong> ได้เลย!</span>
+          </div>
+          <div class="feedback-controls">
+            <label class="toggle-auto">
+              <input type="checkbox" id="chk-auto-next" checked />
+              <span>ไปข้อถัดไปอัตโนมัติ</span>
+            </label>
+            <button class="btn btn-pink btn-sm" id="btn-next" style="display:none;">ข้อถัดไป ➜</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== RESULT SCREEN ==================== -->
+    <section id="screen-result" class="screen">
+      <div class="result-wrap">
+        <div class="sticker-card result-card">
+          <div class="result-mascot" id="result-mascot"></div>
+          <div class="result-stars" id="result-stars">⭐⭐⭐</div>
+          <h2 id="result-title" style="margin:0 0 4px;font-size:1.6rem;">เก่งสุดยอดไปเลย! 🎉</h2>
+          <p id="result-subtitle" style="margin:0;color:var(--ink-soft);font-weight:600;"></p>
+
+          <div class="result-score-grid">
+            <div class="score-box">
+              <div class="num" id="res-correct">0</div>
+              <div class="lbl">ตอบถูก (ข้อ)</div>
+            </div>
+            <div class="score-box">
+              <div class="num" id="res-percent">0%</div>
+              <div class="lbl">ความแม่นยำ</div>
+            </div>
+            <div class="score-box">
+              <div class="num" id="res-streak">0</div>
+              <div class="lbl">คอมโบสูงสุด 🔥</div>
+            </div>
+          </div>
+
+          <div id="res-wrong-section" style="display:none;">
+            <div style="text-align:left;font-weight:700;font-size:0.94rem;margin-bottom:6px;">📝 คำที่ตอบผิดในรอบนี้ (บันทึกไว้ให้ทบทวนแล้ว):</div>
+            <div class="wrong-review-list" id="res-wrong-list"></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-pink" id="btn-res-next-stage" style="display:none;">🚀 ไปด่านถัดไป</button>
+            <button class="btn btn-lavender" id="btn-res-retry-wrong" style="display:none;">💡 ทบทวนคำที่ผิดรอบนี้</button>
+            <button class="btn btn-mint" id="btn-res-replay">🔄 เล่นรอบนี้อีกครั้ง</button>
+            <button class="btn btn-sky" id="btn-res-home">🏠 กลับหน้าหลัก</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VOCAB BOOK SCREEN ==================== -->
+    <section id="screen-book" class="screen">
+      <header class="top-bar">
+        <button class="btn btn-sm" id="btn-book-home">🏠 กลับหน้าหลัก</button>
+        <div class="brand-pill">📖 สมุดคำศัพท์ครบทั้ง 280 คำ (แตะ 🔊 ฟังเสียง)</div>
+        <div style="font-weight:700;font-size:0.9rem;color:var(--ink-soft);" id="book-count-label">280 คำ</div>
+      </header>
+      <div class="book-controls">
+        <input type="text" class="search-input" id="book-search" placeholder="🔍 ค้นหาคำภาษาอังกฤษ หรือ ความหมายภาษาไทย..." />
+        <button class="btn btn-sm btn-pink" data-bfilter="ALL">ทั้งหมด</button>
+        <button class="btn btn-sm btn-mint" data-bfilter="A1">A1</button>
+        <button class="btn btn-sm btn-sky" data-bfilter="A2">A2</button>
+        <button class="btn btn-sm btn-butter" data-bfilter="B1">B1</button>
+        <button class="btn btn-sm btn-lavender" data-bfilter="B2">B2</button>
+        <button class="btn btn-sm" data-bfilter="WRONG">❌ คำผิด</button>
+      </div>
+      <div class="vocab-list" id="vocab-list"></div>
+    </section>
+  </div>
+
+  <!-- ==================== iPad FULL-SCREEN GUIDE MODAL ==================== -->
+  <div class="modal-backdrop" id="modal-ipad">
+    <div class="sticker-card modal-card">
+      <h2>📱 วิธีเปิดเล่นแบบเต็มจอ 100% บน iPad</h2>
+      <ol class="ipad-steps">
+        <li>
+          <span class="step-num">1</span>
+          <div>เปิดลิงค์เกมนี้ด้วยแอป <strong>Safari</strong> บน iPad</div>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <div>แตะปุ่ม <strong>แชร์ (Share ⬆️)</strong> ที่มุมขวาบนของ Safari</div>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <div>เลือก <strong>“เพิ่มไปยังหน้าจอโฮม” (Add to Home Screen)</strong> แล้วกด <strong>เพิ่ม</strong></div>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <div>เปิดเกมจากไอคอน <strong>Chibi Vocab 🎀</strong> บนหน้าจอโฮม — เกมจะเปิดแบบ<strong>เต็มจอไร้แถบ URL</strong> เหมือนแอป iPad แท้ๆ เลย!</div>
+        </li>
+      </ol>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button class="btn btn-pink" id="btn-close-ipad">เข้าใจแล้ว เริ่มลุยเลย! ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. COMPLETE 280-WORD VOCABULARY DATASET (bed -> complicated)
+    //    Exact 4 columns x 70 words = 280 entries from the uploaded sheet
+    // =========================================================================
+    const VOCAB = [
+      // --- COLUMN 1 (1 - 70) ---
+      { id: 1, w: "bed", pos: "n.", lv: "A1", th: "เตียงนอน" },
+      { id: 2, w: "bedroom", pos: "n.", lv: "A1", th: "ห้องนอน" },
+      { id: 3, w: "bee", pos: "n.", lv: "B1", th: "ผึ้ง" },
+      { id: 4, w: "beef", pos: "n.", lv: "A2", th: "เนื้อวัว" },
+      { id: 5, w: "beer", pos: "n.", lv: "A1", th: "เบียร์" },
+      { id: 6, w: "before", pos: "prep., conj., adv.", lv: "A1", th: "ก่อน, ก่อนหน้านี้" },
+      { id: 7, w: "beg", pos: "v.", lv: "B2", th: "ขอร้อง, อ้อนวอน" },
+      { id: 8, w: "begin", pos: "v.", lv: "A1", th: "เริ่มต้น", g: "begin" },
+      { id: 9, w: "beginning", pos: "n.", lv: "A1", th: "จุดเริ่มต้น, ตอนต้น", g: "begin" },
+      { id: 10, w: "behave", pos: "v.", lv: "A2", th: "ประพฤติตัว, ปฏิบัติตัว", g: "behave" },
+      { id: 11, w: "behavior", pos: "n.", lv: "A2", th: "พฤติกรรม, ความประพฤติ", g: "behave" },
+      { id: 12, w: "behind", pos: "prep., adv.", lv: "A1", th: "ข้างหลัง, เบื้องหลัง" },
+      { id: 13, w: "being", pos: "n.", lv: "B2", th: "สิ่งมีชีวิต, การมีอยู่" },
+      { id: 14, w: "belief", pos: "n.", lv: "B1", th: "ความเชื่อ", g: "believe" },
+      { id: 15, w: "believe", pos: "v.", lv: "A1", th: "เชื่อ", g: "believe" },
+      { id: 16, w: "bell", pos: "n.", lv: "B1", th: "กระดิ่ง, ระฆัง" },
+      { id: 17, w: "belong", pos: "v.", lv: "A2", th: "เป็นของ, สังกัด" },
+      { id: 18, w: "below", pos: "adv., prep.", lv: "A1", th: "ข้างล่าง, ต่ำกว่า" },
+      { id: 19, w: "belt", pos: "n.", lv: "A2", th: "เข็มขัด" },
+      { id: 20, w: "bend", pos: "v., n.", lv: "B1", th: "งอ, โค้ง, ก้มลง", g: "bend" },
+      { id: 21, w: "benefit", pos: "n., v.", lv: "A2", th: "ประโยชน์, ผลประโยชน์" },
+      { id: 22, w: "bent", pos: "adj.", lv: "B2", th: "ที่โค้งงอ, บิดเบี้ยว", g: "bend" },
+      { id: 23, w: "best", pos: "adj., adv., n.", lv: "A1", th: "ดีที่สุด" },
+      { id: 24, w: "bet", pos: "v., n.", lv: "B2", th: "พนัน, เดิมพัน" },
+      { id: 25, w: "better", pos: "adj., adv., n.", lv: "A1", th: "ดีกว่า" },
+      { id: 26, w: "between", pos: "prep., adv.", lv: "A1", th: "ระหว่าง" },
+      { id: 27, w: "beyond", pos: "prep., adv.", lv: "B2", th: "เกินกว่า, นอกเหนือจาก, ไกลออกไป" },
+      { id: 28, w: "bicycle", pos: "n.", lv: "A1", th: "รถจักรยาน", g: "bike" },
+      { id: 29, w: "big", pos: "adj.", lv: "A1", th: "ใหญ่" },
+      { id: 30, w: "bike", pos: "n.", lv: "A1", th: "จักรยาน (คำย่อ)", g: "bike" },
+      { id: 31, w: "bill", pos: "n., v.", lv: "A1", th: "ใบแจ้งหนี้, บิล, ธนบัตร" },
+      { id: 32, w: "billion", pos: "number", lv: "A2", th: "หนึ่งพันล้าน" },
+      { id: 33, w: "biology", pos: "n.", lv: "A2", th: "วิชาชีววิทยา" },
+      { id: 34, w: "bird", pos: "n.", lv: "A1", th: "นก" },
+      { id: 35, w: "birth", pos: "n.", lv: "A2", th: "การเกิด, กำเนิด", g: "birth" },
+      { id: 36, w: "birthday", pos: "n.", lv: "A1", th: "วันเกิด", g: "birth" },
+      { id: 37, w: "bit", pos: "n.", lv: "A2", th: "เล็กน้อย, ชิ้นเล็กๆ" },
+      { id: 38, w: "bite", pos: "v., n.", lv: "B1", th: "กัด" },
+      { id: 39, w: "bitter", pos: "adj.", lv: "B2", th: "ขม, ขมขื่น" },
+      { id: 40, w: "black", pos: "adj., n.", lv: "A1", th: "สีดำ" },
+      { id: 41, w: "blame", pos: "v., n.", lv: "B2", th: "ตำหนิ, โทษ" },
+      { id: 42, w: "blind", pos: "adj.", lv: "B2", th: "ตาบอด" },
+      { id: 43, w: "block", pos: "n., v.", lv: "A2", th: "ก้อน, ตึกแถว, ขัดขวาง" },
+      { id: 44, w: "blog", pos: "n.", lv: "A1", th: "บล็อก (เว็บบันทึก)" },
+      { id: 45, w: "blond", pos: "adj.", lv: "A1", th: "ผมสีบลอนด์, สีทอง" },
+      { id: 46, w: "blood", pos: "n.", lv: "A2", th: "เลือด" },
+      { id: 47, w: "blow", pos: "v.", lv: "A2", th: "เป่า, พัด" },
+      { id: 48, w: "blue", pos: "adj., n.", lv: "A1", th: "สีน้ำเงิน, สีฟ้า" },
+      { id: 49, w: "board", pos: "n., v.", lv: "A2", th: "กระดาน, คณะกรรมการ, ขึ้นเครื่องบิน" },
+      { id: 50, w: "boat", pos: "n.", lv: "A1", th: "เรือ" },
+      { id: 51, w: "body", pos: "n.", lv: "A1", th: "ร่างกาย" },
+      { id: 52, w: "boil", pos: "v.", lv: "A2", th: "ต้ม, เดือด" },
+      { id: 53, w: "bomb", pos: "n., v.", lv: "B1", th: "ระเบิด" },
+      { id: 54, w: "bond", pos: "n.", lv: "B2", th: "ความผูกพัน, พันธะ" },
+      { id: 55, w: "bone", pos: "n.", lv: "A2", th: "กระดูก" },
+      { id: 56, w: "book", pos: "n., v.", lv: "A1", th: "หนังสือ, จอง" },
+      { id: 57, w: "boot", pos: "n.", lv: "A1", th: "รองเท้าบูท" },
+      { id: 58, w: "border", pos: "n., v.", lv: "B1", th: "ชายแดน, ขอบเขต" },
+      { id: 59, w: "bored", pos: "adj.", lv: "A1", th: "รู้สึกเบื่อ", g: "bore" },
+      { id: 60, w: "boring", pos: "adj.", lv: "A1", th: "น่าเบื่อ", g: "bore" },
+      { id: 61, w: "born", pos: "v.", lv: "A1", th: "เกิด (ถือกำเนิด)", g: "birth" },
+      { id: 62, w: "borrow", pos: "v.", lv: "A2", th: "ยืม" },
+      { id: 63, w: "boss", pos: "n.", lv: "A2", th: "เจ้านาย, หัวหน้า" },
+      { id: 64, w: "both", pos: "det./pron.", lv: "A1", th: "ทั้งสอง" },
+      { id: 65, w: "bother", pos: "v.", lv: "B1", th: "รบกวน, กังวลใจ" },
+      { id: 66, w: "bottle", pos: "n.", lv: "A1", th: "ขวด" },
+      { id: 67, w: "bottom", pos: "n., adj.", lv: "A2", th: "ก้น, ด้านล่างสุด" },
+      { id: 68, w: "bowl", pos: "n.", lv: "A2", th: "ชาม, ถ้วย" },
+      { id: 69, w: "box", pos: "n.", lv: "A1", th: "กล่อง" },
+      { id: 70, w: "boy", pos: "n.", lv: "A1", th: "เด็กผู้ชาย" },
+
+      // --- COLUMN 2 (71 - 140) ---
+      { id: 71, w: "boyfriend", pos: "n.", lv: "A1", th: "แฟนหนุ่ม" },
+      { id: 72, w: "brain", pos: "n.", lv: "A2", th: "สมอง" },
+      { id: 73, w: "branch", pos: "n.", lv: "B1", th: "กิ่งไม้, สาขา" },
+      { id: 74, w: "brand", pos: "n., v.", lv: "B1", th: "ยี่ห้อ, แบรนด์" },
+      { id: 75, w: "brave", pos: "adj.", lv: "B1", th: "กล้าหาญ" },
+      { id: 76, w: "bread", pos: "n.", lv: "A1", th: "ขนมปัง" },
+      { id: 77, w: "break", pos: "v., n.", lv: "A1", th: "ทำแตก, พักเบรก" },
+      { id: 78, w: "breakfast", pos: "n.", lv: "A1", th: "อาหารเช้า" },
+      { id: 79, w: "breast", pos: "n.", lv: "B2", th: "หน้าอก, อกไก่", g: "chest" },
+      { id: 80, w: "breath", pos: "n.", lv: "B2", th: "ลมหายใจ", g: "breath" },
+      { id: 81, w: "breathe", pos: "v.", lv: "B1", th: "หายใจ", g: "breath" },
+      { id: 82, w: "breathing", pos: "n.", lv: "B1", th: "การหายใจ", g: "breath" },
+      { id: 83, w: "bride", pos: "n.", lv: "B1", th: "เจ้าสาว" },
+      { id: 84, w: "bridge", pos: "n.", lv: "A2", th: "สะพาน" },
+      { id: 85, w: "brief", pos: "adj.", lv: "B2", th: "สั้นๆ, กระชับ" },
+      { id: 86, w: "bright", pos: "adj.", lv: "A2", th: "สว่าง, สดใส, ฉลาด" },
+      { id: 87, w: "brilliant", pos: "adj.", lv: "A2", th: "ยอดเยี่ยม, ฉลาดมาก, สว่างจ้า" },
+      { id: 88, w: "bring", pos: "v.", lv: "A1", th: "นำมา, พามา" },
+      { id: 89, w: "broad", pos: "adj.", lv: "B2", th: "กว้าง, กว้างขวาง" },
+      { id: 90, w: "broadcast", pos: "v., n.", lv: "B2", th: "ออกอากาศ, แพร่ภาพกระจายเสียง" },
+      { id: 91, w: "broken", pos: "adj.", lv: "A2", th: "แตกหัก, เสีย, พัง" },
+      { id: 92, w: "brother", pos: "n.", lv: "A1", th: "พี่ชาย, น้องชาย" },
+      { id: 93, w: "brown", pos: "adj., n.", lv: "A1", th: "สีน้ำตาล" },
+      { id: 94, w: "brush", pos: "v., n.", lv: "A2", th: "แปรง, แปรงฟัน/แปรงผม" },
+      { id: 95, w: "bubble", pos: "n.", lv: "B1", th: "ฟองอากาศ, ฟองสบู่" },
+      { id: 96, w: "budget", pos: "n.", lv: "B2", th: "งบประมาณ" },
+      { id: 97, w: "build", pos: "v.", lv: "A1", th: "สร้าง", g: "build" },
+      { id: 98, w: "building", pos: "n.", lv: "A1", th: "อาคาร, ตึก", g: "build" },
+      { id: 99, w: "bullet", pos: "n.", lv: "B2", th: "กระสุนปืน" },
+      { id: 100, w: "bunch", pos: "n.", lv: "B2", th: "พวง, ช่อ, กลุ่ม" },
+      { id: 101, w: "burn", pos: "v., n.", lv: "A2", th: "เผาไหม้, ลวก" },
+      { id: 102, w: "bury", pos: "v.", lv: "B1", th: "ฝัง" },
+      { id: 103, w: "bus", pos: "n.", lv: "A1", th: "รถประจำทาง, รถบัส" },
+      { id: 104, w: "bush", pos: "n.", lv: "B2", th: "พุ่มไม้" },
+      { id: 105, w: "business", pos: "n.", lv: "A1", th: "ธุรกิจ", g: "business" },
+      { id: 106, w: "businessman", pos: "n.", lv: "A2", th: "นักธุรกิจชาย", g: "business" },
+      { id: 107, w: "busy", pos: "adj.", lv: "A1", th: "ยุ่ง, ไม่ว่าง" },
+      { id: 108, w: "but", pos: "conj., prep.", lv: "A1", th: "แต่, ยกเว้น" },
+      { id: 109, w: "butter", pos: "n.", lv: "A1", th: "เนย" },
+      { id: 110, w: "button", pos: "n.", lv: "A2", th: "กระดุม, ปุ่มกด" },
+      { id: 111, w: "buy", pos: "v.", lv: "A1", th: "ซื้อ" },
+      { id: 112, w: "by", pos: "prep., adv.", lv: "A1", th: "โดย, ข้างๆ, ภายในเวลา" },
+      { id: 113, w: "bye", pos: "exclam.", lv: "A1", th: "ลาก่อน, บ๊ายบาย" },
+      { id: 114, w: "cable", pos: "n.", lv: "B1", th: "สายเคเบิล, สายไฟ" },
+      { id: 115, w: "cafe", pos: "n.", lv: "A1", th: "ร้านกาแฟ, คาเฟ่" },
+      { id: 116, w: "cake", pos: "n.", lv: "A1", th: "เค้ก" },
+      { id: 117, w: "calculate", pos: "v.", lv: "B2", th: "คำนวณ" },
+      { id: 118, w: "call", pos: "v., n.", lv: "A1", th: "โทรศัพท์, เรียก" },
+      { id: 119, w: "calm", pos: "adj., v., n.", lv: "B1", th: "สงบ, ใจเย็น" },
+      { id: 120, w: "camera", pos: "n.", lv: "A1", th: "กล้องถ่ายรูป" },
+      { id: 121, w: "camp", pos: "n., v.", lv: "A2", th: "ค่าย, ตั้งแคมป์", g: "camp" },
+      { id: 122, w: "campaign", pos: "n., v.", lv: "B1", th: "การรณรงค์, แคมเปญ" },
+      { id: 123, w: "camping", pos: "n.", lv: "A2", th: "การตั้งแคมป์", g: "camp" },
+      { id: 124, w: "campus", pos: "n.", lv: "A2", th: "วิทยาเขต, บริเวณมหาวิทยาลัย" },
+      { id: 125, w: "can¹", speak: "can", pos: "modal v.", lv: "A1", th: "สามารถ, ทำได้", g: "can" },
+      { id: 126, w: "can²", speak: "can", pos: "n.", lv: "A2", th: "กระป๋อง" },
+      { id: 127, w: "cancel", pos: "v.", lv: "B2", th: "ยกเลิก" },
+      { id: 128, w: "cancer", pos: "n.", lv: "B2", th: "โรคมะเร็ง" },
+      { id: 129, w: "candidate", pos: "n.", lv: "B1", th: "ผู้สมัคร, ผู้เข้าชิงตำแหน่ง" },
+      { id: 130, w: "candy", pos: "n.", lv: "A2", th: "ลูกอม, ขนมหวาน" },
+      { id: 131, w: "cannot", pos: "v.", lv: "A1", th: "ไม่สามารถ", g: "can" },
+      { id: 132, w: "cap", pos: "n.", lv: "B1", th: "หมวกแก๊ป, ฝาขวด" },
+      { id: 133, w: "capable", pos: "adj.", lv: "B2", th: "มีความสามารถ" },
+      { id: 134, w: "capacity", pos: "n.", lv: "B2", th: "ความจุ, ศักยภาพ" },
+      { id: 135, w: "capital", pos: "n., adj.", lv: "A1", th: "เมืองหลวง, เงินทุน, ตัวพิมพ์ใหญ่" },
+      { id: 136, w: "captain", pos: "n.", lv: "B1", th: "กัปตัน, หัวหน้าทีม" },
+      { id: 137, w: "capture", pos: "v., n.", lv: "B2", th: "จับกุม, ยึดครอง, บันทึกภาพ" },
+      { id: 138, w: "car", pos: "n.", lv: "A1", th: "รถยนต์" },
+      { id: 139, w: "card", pos: "n.", lv: "A1", th: "บัตร, การ์ด" },
+      { id: 140, w: "care", pos: "n., v.", lv: "A2", th: "การดูแล, ใส่ใจ" },
+
+      // --- COLUMN 3 (141 - 210) ---
+      { id: 141, w: "career", pos: "n.", lv: "A1", th: "อาชีพ, สายงาน" },
+      { id: 142, w: "careful", pos: "adj.", lv: "A2", th: "ระมัดระวัง, รอบคอบ", g: "careful" },
+      { id: 143, w: "carefully", pos: "adv.", lv: "A2", th: "อย่างระมัดระวัง", g: "careful" },
+      { id: 144, w: "careless", pos: "adj.", lv: "B1", th: "ประมาท, สะเพร่า" },
+      { id: 145, w: "carpet", pos: "n.", lv: "A2", th: "พรม" },
+      { id: 146, w: "carrot", pos: "n.", lv: "A1", th: "แครอท" },
+      { id: 147, w: "carry", pos: "v.", lv: "A1", th: "ถือ, แบก, พกพา" },
+      { id: 148, w: "cartoon", pos: "n.", lv: "A2", th: "การ์ตูน" },
+      { id: 149, w: "case", pos: "n.", lv: "A2", th: "กรณี, กล่อง/กระเป๋าใส่ของ" },
+      { id: 150, w: "cash", pos: "n.", lv: "A2", th: "เงินสด" },
+      { id: 151, w: "cast", pos: "n., v.", lv: "B2", th: "นักแสดงทั้งหมด, เหวี่ยง, หล่อ" },
+      { id: 152, w: "cat", pos: "n.", lv: "A1", th: "แมว" },
+      { id: 153, w: "catch", pos: "v., n.", lv: "A2", th: "จับ, รับ, ขึ้นรถ/เครื่องบิน" },
+      { id: 154, w: "category", pos: "n.", lv: "B1", th: "หมวดหมู่, ประเภท" },
+      { id: 155, w: "cause", pos: "n., v.", lv: "A2", th: "สาเหตุ, ก่อให้เกิด" },
+      { id: 156, w: "ceiling", pos: "n.", lv: "B1", th: "เพดาน" },
+      { id: 157, w: "celebrate", pos: "v.", lv: "A2", th: "เฉลิมฉลอง", g: "celebrate" },
+      { id: 158, w: "celebration", pos: "n.", lv: "B1", th: "งานเฉลิมฉลอง", g: "celebrate" },
+      { id: 159, w: "celebrity", pos: "n.", lv: "A2", th: "คนดัง, ดารา" },
+      { id: 160, w: "cell", pos: "n.", lv: "A2", th: "เซลล์, ห้องขัง" },
+      { id: 161, w: "cent", pos: "n.", lv: "A1", th: "เซ็นต์ (หน่วยเงินย่อย)" },
+      { id: 162, w: "center", pos: "n., v.", lv: "A1", th: "ศูนย์กลาง, ตรงกลาง", g: "center" },
+      { id: 163, w: "central", pos: "adj.", lv: "B1", th: "ที่อยู่ตรงกลาง, ส่วนกลาง", g: "center" },
+      { id: 164, w: "century", pos: "n.", lv: "A2", th: "ศตวรรษ (100 ปี)" },
+      { id: 165, w: "ceremony", pos: "n.", lv: "B1", th: "พิธีการ, พิธีกรรม" },
+      { id: 166, w: "certain", pos: "adj.", lv: "A2", th: "แน่ใจ, แน่นอน", g: "certain" },
+      { id: 167, w: "certainly", pos: "adv.", lv: "A2", th: "อย่างแน่นอน", g: "certain" },
+      { id: 168, w: "chain", pos: "n., v.", lv: "B1", th: "โซ่, เครือข่ายร้านค้า" },
+      { id: 169, w: "chair", pos: "n., v.", lv: "A1", th: "เก้าอี้, เป็นประธาน" },
+      { id: 170, w: "challenge", pos: "n., v.", lv: "B1", th: "ความท้าทาย, ท้าทาย" },
+      { id: 171, w: "champion", pos: "n.", lv: "B1", th: "แชมป์, ผู้ชนะเลิศ" },
+      { id: 172, w: "chance", pos: "n.", lv: "A2", th: "โอกาส" },
+      { id: 173, w: "change", pos: "v., n.", lv: "A1", th: "เปลี่ยนแปลง, เงินทอน" },
+      { id: 174, w: "channel", pos: "n.", lv: "B1", th: "ช่องทีวี, ช่องทาง" },
+      { id: 175, w: "chapter", pos: "n.", lv: "B1", th: "บท (ในหนังสือ)" },
+      { id: 176, w: "character", pos: "n.", lv: "A2", th: "ตัวละคร, ลักษณะนิสัย", g: "char" },
+      { id: 177, w: "characteristic", pos: "n., adj.", lv: "B2", th: "ลักษณะเฉพาะ, เอกลักษณ์", g: "char" },
+      { id: 178, w: "charge", pos: "n., v.", lv: "B1", th: "คิดเงิน, ชาร์จไฟ, ข้อกล่าวหา" },
+      { id: 179, w: "charity", pos: "n.", lv: "A2", th: "การกุศล, องค์กรการกุศล" },
+      { id: 180, w: "chart", pos: "n., v.", lv: "A1", th: "แผนภูมิ, กราฟ" },
+      { id: 181, w: "chat", pos: "v., n.", lv: "A2", th: "พูดคุยเล่น, แชท" },
+      { id: 182, w: "cheap", pos: "adj., adv.", lv: "A1", th: "ราคาถูก" },
+      { id: 183, w: "cheat", pos: "v., n.", lv: "B1", th: "โกง, ทุจริต" },
+      { id: 184, w: "check", pos: "v., n.", lv: "A1", th: "ตรวจสอบ, เช็ค" },
+      { id: 185, w: "cheerful", pos: "adj.", lv: "B1", th: "ร่าเริง, แจ่มใส" },
+      { id: 186, w: "cheese", pos: "n.", lv: "A1", th: "ชีส, เนยแข็ง" },
+      { id: 187, w: "chef", pos: "n.", lv: "A2", th: "เชฟ, พ่อครัวแม่ครัว" },
+      { id: 188, w: "chemical", pos: "adj., n.", lv: "B1", th: "สารเคมี, เกี่ยวกับเคมี", g: "chem" },
+      { id: 189, w: "chemistry", pos: "n.", lv: "A2", th: "วิชาเคมี", g: "chem" },
+      { id: 190, w: "chest", pos: "n.", lv: "B1", th: "หน้าอก, หีบสมบัติ", g: "chest" },
+      { id: 191, w: "chicken", pos: "n.", lv: "A1", th: "ไก่, เนื้อไก่" },
+      { id: 192, w: "chief", pos: "adj., n.", lv: "B2", th: "หัวหน้า, สำคัญที่สุด" },
+      { id: 193, w: "child", pos: "n.", lv: "A1", th: "เด็ก", g: "child" },
+      { id: 194, w: "childhood", pos: "n.", lv: "B1", th: "วัยเด็ก", g: "child" },
+      { id: 195, w: "chip", pos: "n.", lv: "A2", th: "มันฝรั่งแผ่นทอด, ชิปคอมพิวเตอร์" },
+      { id: 196, w: "chocolate", pos: "n.", lv: "A1", th: "ช็อกโกแลต" },
+      { id: 197, w: "choice", pos: "n.", lv: "A2", th: "ทางเลือก, ตัวเลือก", g: "choose" },
+      { id: 198, w: "choose", pos: "v.", lv: "A1", th: "เลือก", g: "choose" },
+      { id: 199, w: "church", pos: "n.", lv: "A2", th: "โบสถ์" },
+      { id: 200, w: "cigarette", pos: "n.", lv: "A2", th: "บุหรี่" },
+      { id: 201, w: "circle", pos: "n., v.", lv: "A2", th: "วงกลม, วงล้อม" },
+      { id: 202, w: "circumstance", pos: "n.", lv: "B2", th: "สถานการณ์, สภาพแวดล้อม" },
+      { id: 203, w: "cite", pos: "v.", lv: "B2", th: "อ้างอิง" },
+      { id: 204, w: "citizen", pos: "n.", lv: "B2", th: "พลเมือง, ประชาชน" },
+      { id: 205, w: "city", pos: "n.", lv: "A1", th: "เมือง, เมืองใหญ่" },
+      { id: 206, w: "civil", pos: "adj.", lv: "B2", th: "พลเรือน, เกี่ยวกับประชาชน, สุภาพ" },
+      { id: 207, w: "claim", pos: "v., n.", lv: "B1", th: "อ้างว่า, เรียกร้องสิทธิ์" },
+      { id: 208, w: "class", pos: "n.", lv: "A1", th: "ชั้นเรียน, วิชาเรียน, ชนชั้น" },
+      { id: 209, w: "classic", pos: "adj., n.", lv: "B2", th: "คลาสสิก, ยอดเยี่ยมตลอดกาล", g: "classic" },
+      { id: 210, w: "classical", pos: "adj.", lv: "A2", th: "ดนตรี/ศิลปะคลาสสิก, แบบดั้งเดิม", g: "classic" },
+
+      // --- COLUMN 4 (211 - 280) ---
+      { id: 211, w: "classroom", pos: "n.", lv: "A1", th: "ห้องเรียน" },
+      { id: 212, w: "clause", pos: "n.", lv: "B1", th: "อนุประโยค, ข้อกำหนดในสัญญา" },
+      { id: 213, w: "clean", pos: "adj., v.", lv: "A1", th: "สะอาด, ทำความสะอาด" },
+      { id: 214, w: "clear", pos: "adj., v.", lv: "A2", th: "ชัดเจน, ใส, เก็บกวาด", g: "clear" },
+      { id: 215, w: "clearly", pos: "adv.", lv: "A2", th: "อย่างชัดเจน", g: "clear" },
+      { id: 216, w: "clerk", pos: "n.", lv: "A2", th: "เสมียน, พนักงานขาย/ต้อนรับ" },
+      { id: 217, w: "clever", pos: "adj.", lv: "B1", th: "ฉลาด, หัวไว" },
+      { id: 218, w: "click", pos: "v., n.", lv: "B1", th: "คลิก (เมาส์), เสียงคลิก" },
+      { id: 219, w: "client", pos: "n.", lv: "B1", th: "ลูกค้า, ผู้ว่าจ้าง" },
+      { id: 220, w: "climate", pos: "n.", lv: "A2", th: "ภูมิอากาศ" },
+      { id: 221, w: "climb", pos: "v., n.", lv: "A1", th: "ปีน, ไต่ขึ้น" },
+      { id: 222, w: "clock", pos: "n.", lv: "A1", th: "นาฬิกา (แขวน/ตั้งโต๊ะ)" },
+      { id: 223, w: "close¹", speak: "close", pos: "v., n.", lv: "A1", th: "ปิด, จบลง", g: "close1" },
+      { id: 224, w: "close²", speak: "close", pos: "adj., adv.", lv: "A2", th: "ใกล้, สนิทสนม", g: "close2" },
+      { id: 225, w: "closed", pos: "adj.", lv: "A2", th: "ที่ปิดอยู่", g: "close1" },
+      { id: 226, w: "closely", pos: "adv.", lv: "B2", th: "อย่างใกล้ชิด, อย่างละเอียด", g: "close2" },
+      { id: 227, w: "closet", pos: "n.", lv: "A2", th: "ตู้เสื้อผ้า" },
+      { id: 228, w: "cloth", pos: "n.", lv: "B1", th: "ผ้า, ผืนผ้า", g: "cloth" },
+      { id: 229, w: "clothes", pos: "n.", lv: "A1", th: "เสื้อผ้า", g: "cloth" },
+      { id: 230, w: "clothing", pos: "n.", lv: "A2", th: "เครื่องนุ่งห่ม, เสื้อผ้า", g: "cloth" },
+      { id: 231, w: "cloud", pos: "n.", lv: "A2", th: "เมฆ, ก้อนเมฆ" },
+      { id: 232, w: "club", pos: "n.", lv: "A1", th: "ชมรม, สโมสร" },
+      { id: 233, w: "clue", pos: "n.", lv: "B1", th: "เบาะแส, คำใบ้" },
+      { id: 234, w: "coach", pos: "n., v.", lv: "A2", th: "โค้ช/ผู้ฝึกสอน, รถโค้ช" },
+      { id: 235, w: "coal", pos: "n.", lv: "B1", th: "ถ่านหิน" },
+      { id: 236, w: "coast", pos: "n.", lv: "A2", th: "ชายฝั่งทะเล" },
+      { id: 237, w: "coat", pos: "n.", lv: "A1", th: "เสื้อโค้ท, เสื้อคลุม" },
+      { id: 238, w: "code", pos: "n.", lv: "A2", th: "รหัส, โค้ด" },
+      { id: 239, w: "coffee", pos: "n.", lv: "A1", th: "กาแฟ" },
+      { id: 240, w: "coin", pos: "n.", lv: "B1", th: "เหรียญ" },
+      { id: 241, w: "cold", pos: "adj., n.", lv: "A1", th: "หนาว, เย็น, โรคหวัด" },
+      { id: 242, w: "collapse", pos: "v., n.", lv: "B2", th: "พังทลาย, ล้มพับ" },
+      { id: 243, w: "colleague", pos: "n.", lv: "A2", th: "เพื่อนร่วมงาน" },
+      { id: 244, w: "collect", pos: "v.", lv: "A2", th: "สะสม, เก็บรวบรวม", g: "collect" },
+      { id: 245, w: "collection", pos: "n.", lv: "B1", th: "ของสะสม, คอลเลกชัน", g: "collect" },
+      { id: 246, w: "college", pos: "n.", lv: "A1", th: "วิทยาลัย, มหาวิทยาลัย" },
+      { id: 247, w: "color", pos: "n.", lv: "A1", th: "สี", g: "color" },
+      { id: 248, w: "colored", pos: "adj.", lv: "B1", th: "ที่มีสีสัน, ที่ถูกระบายสี", g: "color" },
+      { id: 249, w: "column", pos: "n.", lv: "A2", th: "แถวแนวตั้ง, คอลัมน์, เสา" },
+      { id: 250, w: "combination", pos: "n.", lv: "B2", th: "การผสมผสาน, การรวมกัน", g: "combine" },
+      { id: 251, w: "combine", pos: "v.", lv: "B1", th: "รวมกัน, ผสมผสาน", g: "combine" },
+      { id: 252, w: "come", pos: "v.", lv: "A1", th: "มา" },
+      { id: 253, w: "comedy", pos: "n.", lv: "A2", th: "ละครตลก, เรื่องตลก" },
+      { id: 254, w: "comfort", pos: "n., v.", lv: "B2", th: "ความสะดวกสบาย, ปลอบโยน", g: "comfort" },
+      { id: 255, w: "comfortable", pos: "adj.", lv: "A2", th: "สะดวกสบาย, สบายตัว", g: "comfort" },
+      { id: 256, w: "command", pos: "n., v.", lv: "B2", th: "คำสั่ง, สั่งการ" },
+      { id: 257, w: "comment", pos: "n., v.", lv: "A2", th: "ความคิดเห็น, แสดงความคิดเห็น" },
+      { id: 258, w: "commercial", pos: "adj., n.", lv: "B1", th: "เชิงพาณิชย์, โฆษณาทีวี/วิทยุ" },
+      { id: 259, w: "commission", pos: "n., v.", lv: "B2", th: "ค่านายหน้า, คณะกรรมาธิการ", g: "comm" },
+      { id: 260, w: "commit", pos: "v.", lv: "B1", th: "กระทำ(ความผิด), ผูกมัด, มุ่งมั่น", g: "commit" },
+      { id: 261, w: "commitment", pos: "n.", lv: "B2", th: "ความมุ่งมั่น, คำมั่นสัญญา", g: "commit" },
+      { id: 262, w: "committee", pos: "n.", lv: "B2", th: "คณะกรรมการ", g: "comm" },
+      { id: 263, w: "common", pos: "adj.", lv: "A1", th: "ทั่วไป, พบได้บ่อย, ร่วมกัน", g: "common" },
+      { id: 264, w: "commonly", pos: "adv.", lv: "B2", th: "โดยทั่วไป, เป็นประจำ", g: "common" },
+      { id: 265, w: "communicate", pos: "v.", lv: "A2", th: "สื่อสาร", g: "communicate" },
+      { id: 266, w: "communication", pos: "n.", lv: "B1", th: "การสื่อสาร", g: "communicate" },
+      { id: 267, w: "community", pos: "n.", lv: "A2", th: "ชุมชน" },
+      { id: 268, w: "company", pos: "n.", lv: "A1", th: "บริษัท, เพื่อนร่วมทาง" },
+      { id: 269, w: "compare", pos: "v.", lv: "A1", th: "เปรียบเทียบ", g: "compare" },
+      { id: 270, w: "comparison", pos: "n.", lv: "B1", th: "การเปรียบเทียบ", g: "compare" },
+      { id: 271, w: "compete", pos: "v.", lv: "A2", th: "แข่งขัน", g: "compete" },
+      { id: 272, w: "competition", pos: "n.", lv: "A2", th: "การแข่งขัน", g: "compete" },
+      { id: 273, w: "competitive", pos: "adj.", lv: "B1", th: "ที่ชอบการแข่งขัน, แข่งขันสูง", g: "compete" },
+      { id: 274, w: "competitor", pos: "n.", lv: "B1", th: "คู่แข่ง", g: "compete" },
+      { id: 275, w: "complain", pos: "v.", lv: "A2", th: "บ่น, ร้องเรียน", g: "complain" },
+      { id: 276, w: "complaint", pos: "n.", lv: "B1", th: "คำบ่น, คำร้องเรียน", g: "complain" },
+      { id: 277, w: "complete", pos: "adj., v.", lv: "A1", th: "สมบูรณ์, ทำให้เสร็จสมบูรณ์", g: "complete" },
+      { id: 278, w: "completely", pos: "adv.", lv: "A2", th: "อย่างสมบูรณ์, โดยสิ้นเชิง", g: "complete" },
+      { id: 279, w: "complex", pos: "adj., n.", lv: "B1", th: "ซับซ้อน, หมู่อาคาร", g: "complex" },
+      { id: 280, w: "complicated", pos: "adj.", lv: "B2", th: "ซับซ้อน, ยุ่งยาก", g: "complex" }
+    ];
+
+    // =========================================================================
+    // 2. CUTE ANIMATED CHIBI SVG MASCOT GENERATOR ("น้องโมจิ & เหมียวพุดดิ้ง")
+    // =========================================================================
+    function renderChibiSVG(mood = "welcome") {
+      const animClass =
+        mood === "happy" ? "chibi-jump" :
+        mood === "encourage" ? "chibi-wiggle" :
+        "chibi-float";
+
+      // Eyes & Mouth by mood
+      let eyes = `
+        <g class="eye-blink">
+          <ellipse cx="96" cy="128" rx="10.5" ry="13.5" fill="#3B232E"/>
+          <ellipse cx="144" cy="128" rx="10.5" ry="13.5" fill="#3B232E"/>
+          <circle cx="92" cy="123" r="4.2" fill="#FFFFFF"/>
+          <circle cx="140" cy="123" r="4.2" fill="#FFFFFF"/>
+          <circle cx="100" cy="133" r="2.2" fill="#FFD2E4"/>
+          <circle cx="148" cy="133" r="2.2" fill="#FFD2E4"/>
+        </g>`;
+      let mouth = `<path d="M113 144 Q120 153 127 144" fill="none" stroke="#523743" stroke-width="4" stroke-linecap="round"/>`;
+      let extras = `
+        <path class="sparkle-twinkle" d="M36 48 L39 39 L42 48 L51 51 L42 54 L39 63 L36 54 L27 51 Z" fill="#FFD166"/>
+        <path class="sparkle-twinkle" style="animation-delay:.6s" d="M202 52 L205 44 L208 52 L216 55 L208 58 L205 66 L202 58 L194 55 Z" fill="#FF85AE"/>`;
+      let arms = `
+        <!-- Left waving arm -->
+        <path d="M84 178 Q62 162 66 142 Q72 134 80 144 Q84 156 92 168" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Right holding cute notebook -->
+        <rect x="148" y="162" width="32" height="38" rx="7" transform="rotate(10 164 181)" fill="#89CFF0" stroke="#523743" stroke-width="4"/>
+        <path d="M156 175 L172 178 M154 184 L170 187" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="152" cy="182" r="8" fill="#FFE6D9" stroke="#523743" stroke-width="4"/>`;
+      let crown = "";
+
+      if (mood === "thinking") {
+        eyes = `
+          <g class="eye-blink">
+            <ellipse cx="96" cy="128" rx="10" ry="12.5" fill="#3B232E"/>
+            <ellipse cx="144" cy="128" rx="10" ry="12.5" fill="#3B232E"/>
+            <circle cx="94" cy="122" r="4" fill="#FFFFFF"/>
+            <circle cx="142" cy="122" r="4" fill="#FFFFFF"/>
+            <circle cx="99" cy="132" r="2" fill="#BCE7FF"/>
+            <circle cx="147" cy="132" r="2" fill="#BCE7FF"/>
+          </g>`;
+        mouth = `<ellipse cx="120" cy="147" rx="4.5" ry="3.8" fill="#FF85AE" stroke="#523743" stroke-width="3"/>`;
+        extras = `
+          <text x="190" y="64" font-family="Fredoka,sans-serif" font-size="30" font-weight="700" fill="#70C6FF" stroke="#523743" stroke-width="2" class="sparkle-twinkle">?</text>
+          <circle cx="42" cy="60" r="6" fill="#FFD166" class="sparkle-twinkle"/>`;
+        arms = `
+          <path d="M86 178 Q72 184 78 196" fill="none" stroke="#523743" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M150 176 Q160 158 144 152" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      } else if (mood === "happy") {
+        eyes = `
+          <path d="M85 130 Q96 116 107 130" fill="none" stroke="#3B232E" stroke-width="5" stroke-linecap="round"/>
+          <path d="M133 130 Q144 116 155 130" fill="none" stroke="#3B232E" stroke-width="5" stroke-linecap="round"/>`;
+        mouth = `<path d="M108 142 Q120 160 132 142 Z" fill="#FF7B9C" stroke="#523743" stroke-width="3.5" stroke-linejoin="round"/>`;
+        extras = `
+          <path class="sparkle-twinkle" d="M36 44 L40 32 L44 44 L56 48 L44 52 L40 64 L36 52 L24 48 Z" fill="#FFD166"/>
+          <path class="sparkle-twinkle" style="animation-delay:.3s" d="M198 40 L202 28 L206 40 L218 44 L206 48 L202 60 L198 48 L186 44 Z" fill="#5BD6B2"/>
+          <path d="M48 96 C48 88 38 88 38 96 C38 102 48 108 48 108 C48 108 58 102 58 96 C58 88 48 88 48 96 Z" fill="#FF85AE"/>`;
+        arms = `
+          <path d="M84 176 Q56 156 58 130 Q64 122 73 132 Q78 146 92 166" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M156 176 Q184 156 182 130 Q176 122 167 132 Q162 146 148 166" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      } else if (mood === "encourage") {
+        eyes = `
+          <path d="M86 122 L104 128 L86 134" fill="none" stroke="#3B232E" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M154 122 L136 128 L154 134" fill="none" stroke="#3B232E" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+        mouth = `<path d="M111 147 Q115 142 120 147 Q125 152 129 147" fill="none" stroke="#523743" stroke-width="3.8" stroke-linecap="round"/>`;
+        extras = `
+          <path d="M178 90 Q186 104 178 110 Q170 104 178 90 Z" fill="#89CFF0" stroke="#523743" stroke-width="2.5"/>
+          <path class="sparkle-twinkle" d="M40 58 L43 50 L46 58 L54 61 L46 64 L43 72 L40 64 L32 61 Z" fill="#FF85AE"/>`;
+        arms = `
+          <path d="M84 178 Q62 166 68 148 Q75 142 82 150 Q86 160 92 170" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M156 178 Q178 166 172 148 Q165 142 158 150 Q154 160 148 170" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      } else if (mood === "crown") {
+        eyes = `
+          <path d="M85 130 Q96 116 107 130" fill="none" stroke="#3B232E" stroke-width="5" stroke-linecap="round"/>
+          <path d="M133 130 Q144 116 155 130" fill="none" stroke="#3B232E" stroke-width="5" stroke-linecap="round"/>`;
+        mouth = `<path d="M108 142 Q120 160 132 142 Z" fill="#FF7B9C" stroke="#523743" stroke-width="3.5" stroke-linejoin="round"/>`;
+        crown = `
+          <path d="M90 66 L96 36 L112 52 L120 30 L128 52 L144 36 L150 66 Z" fill="#FFD166" stroke="#523743" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="120" cy="54" r="4.5" fill="#FF6B9D"/>`;
+        extras = `
+          <path class="sparkle-twinkle" d="M34 48 L38 36 L42 48 L54 52 L42 56 L38 68 L34 56 L22 52 Z" fill="#FFD166"/>
+          <path class="sparkle-twinkle" style="animation-delay:.4s" d="M200 46 L204 34 L208 46 L220 50 L208 54 L204 66 L200 54 L188 50 Z" fill="#FF85AE"/>`;
+        arms = `
+          <path d="M84 176 Q58 158 60 134 Q66 126 74 136 Q80 148 92 166" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M156 176 Q182 158 180 134 Q174 126 166 136 Q160 148 148 166" fill="#FFE6D9" stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+
+      return `
+        <svg viewBox="0 0 240 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          ${extras}
+          <!-- Soft ground shadow -->
+          <ellipse cx="120" cy="216" rx="56" ry="9" fill="rgba(82,55,67,0.12)"/>
+          <g class="${animClass}">
+            <!-- Twin hair buns -->
+            <g stroke="#523743" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="66" cy="80" r="23" fill="#7C515F"/>
+              <circle cx="174" cy="80" r="23" fill="#7C515F"/>
+              <!-- Pink ribbons -->
+              <ellipse cx="78" cy="91" rx="12" ry="7.5" transform="rotate(-24 78 91)" fill="#FF85AE"/>
+              <ellipse cx="162" cy="91" rx="12" ry="7.5" transform="rotate(24 162 91)" fill="#FF85AE"/>
+              <!-- Back hair -->
+              <ellipse cx="120" cy="122" rx="60" ry="54" fill="#7C515F"/>
+            </g>
+
+            <!-- Cute Chibi Body (Sailor Dress) -->
+            <g stroke="#523743" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M86 168 Q120 156 154 168 L162 204 Q120 214 78 204 Z" fill="#89CFF0"/>
+              <path d="M100 166 L120 190 L140 166 Z" fill="#FFFFFF"/>
+              <path d="M110 183 L120 196 L130 183 L120 176 Z" fill="#FF6B9D"/>
+              <!-- Tiny shoes -->
+              <ellipse cx="102" cy="208" rx="11" ry="6.5" fill="#7C515F"/>
+              <ellipse cx="138" cy="208" rx="11" ry="6.5" fill="#7C515F"/>
+            </g>
+
+            ${arms}
+
+            <!-- Chibi Head & Bangs -->
+            <g stroke="#523743" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="120" cy="124" rx="50" ry="45" fill="#FFE6D9"/>
+              <path d="M70 116 Q80 68 120 68 Q160 68 170 116 Q154 96 140 109 Q130 92 120 109 Q110 92 100 109 Q86 96 70 116 Z" fill="#7C515F"/>
+              <!-- Hair highlight -->
+              <path d="M96 86 Q120 78 144 86" fill="none" stroke="#A67486" stroke-width="4.5" opacity="0.7"/>
+              <!-- Star hairpin -->
+              <path d="M86 94 L89 87 L92 94 L99 97 L92 100 L89 107 L86 100 L79 97 Z" fill="#FFD166" stroke-width="3"/>
+            </g>
+
+            ${crown}
+            ${eyes}
+            <!-- Rosy Cheeks -->
+            <ellipse cx="81" cy="141" rx="9" ry="5.5" fill="#FF9BBA" opacity="0.72"/>
+            <ellipse cx="159" cy="141" rx="9" ry="5.5" fill="#FF9BBA" opacity="0.72"/>
+            ${mouth}
+          </g>
+
+          <!-- Floating Mini Neko Companion ("เหมียวพุดดิ้ง") -->
+          <g class="neko-bob" transform="translate(182, 134)">
+            <g stroke="#523743" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 14 L12 2 L21 10 L31 10 L40 2 L44 14 Q48 28 38 36 Q26 42 14 36 Q4 28 8 14 Z" fill="#FFFFFF"/>
+            </g>
+            <circle cx="19" cy="23" r="2.6" fill="#3B232E"/>
+            <circle cx="33" cy="23" r="2.6" fill="#3B232E"/>
+            <ellipse cx="14" cy="27" rx="3.4" ry="2" fill="#FF9BBA" opacity="0.75"/>
+            <ellipse cx="38" cy="27" rx="3.4" ry="2" fill="#FF9BBA" opacity="0.75"/>
+            <path d="M23 26 Q26 29 29 26" fill="none" stroke="#523743" stroke-width="2.4" stroke-linecap="round"/>
+          </g>
+        </svg>
+      `;
+    }
+
+    // Dynamically create PNG apple-touch-icon for iPad Home Screen!
+    function initAppleTouchIcon() {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 180;
+        canvas.height = 180;
+        const ctx = canvas.getContext("2d");
+        const grad = ctx.createLinearGradient(0, 0, 180, 180);
+        grad.addColorStop(0, "#FFE4F0");
+        grad.addColorStop(1, "#E3F4FF");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 180, 180);
+
+        const svgStr = renderChibiSVG("welcome").replace('viewBox="0 0 240 230"', 'width="160" height="154" viewBox="0 0 240 230"');
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, 10, 12, 160, 154);
+          const link = document.createElement("link");
+          link.rel = "apple-touch-icon";
+          link.href = canvas.toDataURL("image/png");
+          document.head.appendChild(link);
+        };
+        img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgStr);
+      } catch (_) {}
+    }
+
+    // =========================================================================
+    // 3. SOUND EFFECTS (Web Audio API) & SPEECH SYNTHESIS (English Audio)
+    // =========================================================================
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function playTone(notes) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        let now = audioCtx.currentTime;
+        notes.forEach(([freq, dur, type = "sine", vol = 0.14, delay = 0]) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now + delay);
+          gain.gain.setValueAtTime(vol, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + dur);
+        });
+      } catch (_) {}
+    }
+
+    function sfxCorrect() {
+      playTone([[587.3, 0.11, "triangle", 0.16, 0], [880, 0.22, "triangle", 0.18, 0.09]]);
+    }
+    function sfxWrong() {
+      playTone([[310, 0.14, "sine", 0.14, 0], [235, 0.22, "sine", 0.14, 0.1]]);
+    }
+    function sfxWin() {
+      playTone([
+        [523.25, 0.12, "triangle", 0.15, 0],
+        [659.25, 0.12, "triangle", 0.15, 0.1],
+        [783.99, 0.14, "triangle", 0.16, 0.2],
+        [1046.5, 0.35, "triangle", 0.18, 0.32]
+      ]);
+    }
+
+    function speakWord(item) {
+      if (!("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const text = item.speak || item.w.replace(/[¹²]/g, "");
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        u.rate = 0.92;
+        window.speechSynthesis.speak(u);
+      } catch (_) {}
+    }
+
+    // =========================================================================
+    // 4. CONFETTI BURST (Cute Pastel Sparkles)
+    // =========================================================================
+    const confettiCanvas = document.getElementById("confetti-canvas");
+    const cctx = confettiCanvas.getContext("2d");
+    let particles = [];
+    let confettiRAF = null;
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeConfetti);
+    resizeConfetti();
+
+    function burstConfetti(count = 28) {
+      const colors = ["#FF85AE", "#FFD166", "#5BD6B2", "#70C6FF", "#B899FF"];
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight * 0.42;
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+        const speed = 4 + Math.random() * 6.5;
+        particles.push({
+          x: cx, y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 3.2,
+          size: 6 + Math.random() * 6,
+          color: colors[i % colors.length],
+          rot: Math.random() * Math.PI,
+          vrot: (Math.random() - 0.5) * 0.25,
+          life: 1
+        });
+      }
+      if (!confettiRAF) animateConfetti();
+    }
+
+    function animateConfetti() {
+      cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      particles = particles.filter(p => p.life > 0.02);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.22;
+        p.rot += p.vrot;
+        p.life -= 0.022;
+        cctx.save();
+        cctx.globalAlpha = Math.max(0, p.life);
+        cctx.translate(p.x, p.y);
+        cctx.rotate(p.rot);
+        cctx.fillStyle = p.color;
+        cctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.72);
+        cctx.restore();
+      });
+      if (particles.length > 0) {
+        confettiRAF = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiRAF = null;
+      }
+    }
+
+    // =========================================================================
+    // 5. PERSISTENCE (localStorage Progress, Stars, Mistakes, Resume)
+    // =========================================================================
+    const STORE_KEY = "mochi_chibi_vocab_280_v1";
+    let store = loadStore();
+
+    function defaultStore() {
+      return {
+        mastered: [],      // array of word ids
+        mistakes: [],      // array of word ids
+        stageStars: {},    // { "1": 3, "2": 2, ... }
+        savedAllRun: null, // { queueIds, index, score, combo, maxCombo, wrongIds, modeTitle }
+        sound: true,
+        autoNext: true
+      };
+    }
+
+    function loadStore() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) return defaultStore();
+        return { ...defaultStore(), ...JSON.parse(raw) };
+      } catch (_) {
+        return defaultStore();
+      }
+    }
+
+    function saveStore() {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(store));
+      } catch (_) {}
+    }
+
+    soundEnabled = store.sound !== false;
+
+    // =========================================================================
+    // 6. QUIZ ENGINE & SMART DISTRACTOR GENERATOR (a, b, c, d)
+    // =========================================================================
+    const VOCAB_BY_ID = Object.fromEntries(VOCAB.map(v => [v.id, v]));
+    const STAGE_SIZE = 20;
+    const TOTAL_STAGES = Math.ceil(VOCAB.length / STAGE_SIZE); // 14 stages x 20 = 280!
+
+    const PRAISE_LINES = [
+      "เก่งมากเลย! 🌟",
+      "ถูกต้องเป๊ะปัง! ✨",
+      "สุดยอดไปเลย~ 💖",
+      "จำแม่นสุดๆ! 🎉",
+      "ว้าว! เยี่ยมมาก! 🎀",
+      "เก่งเกินต้าน! 🐾"
+    ];
+    const ENCOURAGE_LINES = [
+      "ไม่เป็นไรนะ ลองจำคำนี้ไว้! 💪",
+      "สู้ๆ น้า เดี๋ยวก็จำได้! 🌷",
+      "เกือบถูกแล้ว เก็บไว้ทบทวนกัน! ✨",
+      "ฮึบๆ ข้อหน้าต้องถูกแน่! 🐾"
+    ];
+    const THINK_LINES = [
+      "คำนี้แปลว่าอะไรน้า~ 🤔",
+      "เลือก a b c หรือ d ดีนะ? ✨",
+      "สู้ๆ นะ เหมียวเชียร์อยู่! 🐱",
+      "ค่อยๆ อ่านแล้วเลือกเลย! 🎀"
+    ];
+
+    let quiz = null;
+    let autoNextTimer = null;
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildChoices(target) {
+      // Pick 3 distractors that NEVER share the same conflict group (g) or identical meaning
+      const usedTh = new Set([target.th]);
+      const usedGroups = new Set(target.g ? [target.g] : []);
+
+      // Prioritize same CEFR level first for balanced difficulty, then others
+      const sameLv = shuffle(VOCAB.filter(v => v.id !== target.id && v.lv === target.lv));
+      const otherLv = shuffle(VOCAB.filter(v => v.id !== target.id && v.lv !== target.lv));
+      const pool = sameLv.concat(otherLv);
+
+      const distractors = [];
+      for (const cand of pool) {
+        if (distractors.length >= 3) break;
+        if (usedTh.has(cand.th)) continue;
+        if (cand.g && usedGroups.has(cand.g)) continue;
+        usedTh.add(cand.th);
+        if (cand.g) usedGroups.add(cand.g);
+        distractors.push(cand);
+      }
+
+      const opts = shuffle([
+        { th: target.th, correct: true },
+        ...distractors.map(d => ({ th: d.th, correct: false }))
+      ]);
+      return opts;
+    }
+
+    function showScreen(id) {
+      clearTimeout(autoNextTimer);
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function startQuiz({ items, title, stageNum = null, isAllMode = false, resumeData = null }) {
+      if (!items || items.length === 0) return;
+      clearTimeout(autoNextTimer);
+      if (resumeData) {
+        quiz = {
+          queue: resumeData.queueIds.map(id => VOCAB_BY_ID[id]).filter(Boolean),
+          index: resumeData.index,
+          score: resumeData.score,
+          combo: resumeData.combo,
+          maxCombo: resumeData.maxCombo,
+          wrongIds: resumeData.wrongIds || [],
+          title: resumeData.modeTitle,
+          stageNum: null,
+          isAllMode: true,
+          answered: false,
+          currentOptions: []
+        };
+      } else {
+        quiz = {
+          queue: items,
+          index: 0,
+          score: 0,
+          combo: 0,
+          maxCombo: 0,
+          wrongIds: [],
+          title,
+          stageNum,
+          isAllMode,
+          answered: false,
+          currentOptions: []
+        };
+      }
+      showScreen("screen-quiz");
+      renderQuestion();
+    }
+
+    function formatWordDisplay(word) {
+      return word
+        .replace("¹", "<sup>1</sup>")
+        .replace("²", "<sup>2</sup>");
+    }
+
+    function renderQuestion() {
+      clearTimeout(autoNextTimer);
+      if (quiz.index >= quiz.queue.length) {
+        finishQuiz();
+        return;
+      }
+
+      quiz.answered = false;
+      const item = quiz.queue[quiz.index];
+      quiz.currentOptions = buildChoices(item);
+
+      // Save resume state for All-280 mode
+      if (quiz.isAllMode) {
+        store.savedAllRun = {
+          queueIds: quiz.queue.map(v => v.id),
+          index: quiz.index,
+          score: quiz.score,
+          combo: quiz.combo,
+          maxCombo: quiz.maxCombo,
+          wrongIds: quiz.wrongIds,
+          modeTitle: quiz.title
+        };
+        saveStore();
+      }
+
+      // Update HUD
+      document.getElementById("quiz-mode-label").textContent = quiz.title;
+      document.getElementById("quiz-counter").textContent = `ข้อ ${quiz.index + 1} / ${quiz.queue.length}`;
+      const pct = Math.round((quiz.index / quiz.queue.length) * 100);
+      document.getElementById("quiz-progress-fill").style.width = `${pct}%`;
+      document.getElementById("hud-score").textContent = quiz.score;
+      document.getElementById("hud-combo").textContent = quiz.combo;
+
+      // Update Word Card
+      document.getElementById("word-index-badge").textContent = `#${item.id} / 280`;
+      document.getElementById("word-pos").textContent = item.pos;
+      const lvEl = document.getElementById("word-level");
+      lvEl.textContent = item.lv;
+      lvEl.className = `badge badge-${item.lv}`;
+      document.getElementById("word-display").innerHTML = formatWordDisplay(item.w);
+
+      // Chibi thinking state
+      document.getElementById("quiz-mascot").innerHTML = renderChibiSVG("thinking");
+      document.getElementById("chibi-speech").textContent = THINK_LINES[quiz.index % THINK_LINES.length];
+
+      // Render Choices a b c d
+      const btns = document.querySelectorAll("#choices-grid .choice-btn");
+      btns.forEach((btn, i) => {
+        btn.disabled = false;
+        btn.className = "choice-btn";
+        btn.querySelector(".choice-text").textContent = quiz.currentOptions[i].th;
+      });
+
+      // Reset Feedback Bar
+      const fb = document.getElementById("feedback-bar");
+      fb.className = "feedback-bar";
+      document.getElementById("feedback-msg").innerHTML = `<span>🐾</span><span>แตะเลือกตัวเลือก <strong>a, b, c</strong> หรือ <strong>d</strong> ได้เลย!</span>`;
+      document.getElementById("btn-next").style.display = "none";
+    }
+
+    function handleAnswer(idx) {
+      if (!quiz || quiz.answered) return;
+      quiz.answered = true;
+
+      const item = quiz.queue[quiz.index];
+      const chosen = quiz.currentOptions[idx];
+      const btns = document.querySelectorAll("#choices-grid .choice-btn");
+      const fb = document.getElementById("feedback-bar");
+      const fbMsg = document.getElementById("feedback-msg");
+      const nextBtn = document.getElementById("btn-next");
+
+      btns.forEach((btn, i) => {
+        btn.disabled = true;
+        if (quiz.currentOptions[i].correct) {
+          btn.classList.add("correct");
+        } else if (i === idx) {
+          btn.classList.add("wrong");
+        } else {
+          btn.classList.add("dim");
+        }
+      });
+
+      if (chosen.correct) {
+        quiz.score++;
+        quiz.combo++;
+        if (quiz.combo > quiz.maxCombo) quiz.maxCombo = quiz.combo;
+        if (!store.mastered.includes(item.id)) store.mastered.push(item.id);
+        store.mistakes = store.mistakes.filter(id => id !== item.id);
+
+        sfxCorrect();
+        if (quiz.combo % 5 === 0 || quiz.index === quiz.queue.length - 1) burstConfetti(32);
+        else burstConfetti(14);
+
+        document.getElementById("quiz-mascot").innerHTML = renderChibiSVG("happy");
+        document.getElementById("chibi-speech").textContent = PRAISE_LINES[Math.floor(Math.random() * PRAISE_LINES.length)];
+        fb.className = "feedback-bar is-correct";
+        fbMsg.innerHTML = `<span>✨</span><span><strong>ถูกต้อง!</strong> ${item.w} (${item.pos}) = <strong>${item.th}</strong></span>`;
+      } else {
+        quiz.combo = 0;
+        if (!quiz.wrongIds.includes(item.id)) quiz.wrongIds.push(item.id);
+        if (!store.mistakes.includes(item.id)) store.mistakes.push(item.id);
+
+        sfxWrong();
+        document.getElementById("quiz-mascot").innerHTML = renderChibiSVG("encourage");
+        document.getElementById("chibi-speech").textContent = ENCOURAGE_LINES[Math.floor(Math.random() * ENCOURAGE_LINES.length)];
+        fb.className = "feedback-bar is-wrong";
+        fbMsg.innerHTML = `<span>💡</span><span>คำตอบที่ถูกคือ <strong>${item.th}</strong> (${item.w} ${item.pos})</span>`;
+      }
+
+      document.getElementById("hud-score").textContent = quiz.score;
+      document.getElementById("hud-combo").textContent = quiz.combo;
+      const pct = Math.round(((quiz.index + 1) / quiz.queue.length) * 100);
+      document.getElementById("quiz-progress-fill").style.width = `${pct}%`;
+
+      if (quiz.isAllMode) {
+        store.savedAllRun = {
+          queueIds: quiz.queue.map(v => v.id),
+          index: quiz.index + 1,
+          score: quiz.score,
+          combo: quiz.combo,
+          maxCombo: quiz.maxCombo,
+          wrongIds: quiz.wrongIds,
+          modeTitle: quiz.title
+        };
+      }
+      saveStore();
+
+      nextBtn.style.display = "inline-flex";
+      nextBtn.textContent = quiz.index + 1 >= quiz.queue.length ? "ดูสรุปคะแนน 🏆" : "ข้อถัดไป ➜";
+
+      if (store.autoNext) {
+        const delay = chosen.correct ? 950 : 1850;
+        autoNextTimer = setTimeout(() => {
+          quiz.index++;
+          renderQuestion();
+        }, delay);
+      }
+    }
+
+    function finishQuiz() {
+      clearTimeout(autoNextTimer);
+      if (quiz.isAllMode) {
+        store.savedAllRun = null;
+      }
+
+      const total = quiz.queue.length;
+      const pct = Math.round((quiz.score / total) * 100);
+      let stars = 1;
+      if (pct >= 90) stars = 3;
+      else if (pct >= 70) stars = 2;
+      else if (pct < 40) stars = 0;
+
+      if (quiz.stageNum !== null) {
+        const prev = store.stageStars[quiz.stageNum] || 0;
+        if (stars > prev) store.stageStars[quiz.stageNum] = stars;
+      }
+      saveStore();
+
+      sfxWin();
+      burstConfetti(55);
+
+      showScreen("screen-result");
+      document.getElementById("result-mascot").innerHTML = renderChibiSVG(pct >= 70 ? "crown" : "encourage");
+      document.getElementById("result-stars").textContent =
+        "⭐".repeat(stars) + "☆".repeat(3 - stars);
+      document.getElementById("result-title").textContent =
+        pct >= 90 ? "สุดยอดปรมาจารย์คำศัพท์! 👑" :
+        pct >= 70 ? "เก่งมากเลย ทำได้ดีสุดๆ! 🎉" :
+        pct >= 50 ? "พยายามได้ดีมาก มาฝึกเพิ่มกัน! ✨" :
+        "ไม่เป็นไรนะ ลองทบทวนแล้วลุยใหม่! 💪";
+      document.getElementById("result-subtitle").textContent = `${quiz.title} — ทำครบทั้ง ${total} ข้อแล้ว`;
+      document.getElementById("res-correct").textContent = `${quiz.score}/${total}`;
+      document.getElementById("res-percent").textContent = `${pct}%`;
+      document.getElementById("res-streak").textContent = quiz.maxCombo;
+
+      // Wrong review list
+      const wrongSec = document.getElementById("res-wrong-section");
+      const wrongList = document.getElementById("res-wrong-list");
+      const retryWrongBtn = document.getElementById("btn-res-retry-wrong");
+      if (quiz.wrongIds.length > 0) {
+        wrongSec.style.display = "block";
+        retryWrongBtn.style.display = "inline-flex";
+        wrongList.innerHTML = quiz.wrongIds.map(id => {
+          const v = VOCAB_BY_ID[id];
+          return `<div class="wrong-chip"><strong>${v.w}</strong><span>${v.th}</span></div>`;
+        }).join("");
+      } else {
+        wrongSec.style.display = "none";
+        retryWrongBtn.style.display = "none";
+      }
+
+      // Next stage button if in stage mode
+      const nextStageBtn = document.getElementById("btn-res-next-stage");
+      if (quiz.stageNum !== null && quiz.stageNum < TOTAL_STAGES) {
+        nextStageBtn.style.display = "inline-flex";
+        nextStageBtn.textContent = `🚀 ไปด่านที่ ${quiz.stageNum + 1}`;
+      } else {
+        nextStageBtn.style.display = "none";
+      }
+    }
+
+    // =========================================================================
+    // 7. HOME SCREEN & VOCAB BOOK RENDERING
+    // =========================================================================
+    function renderHome() {
+      document.getElementById("home-mascot").innerHTML = renderChibiSVG("welcome");
+      document.getElementById("stat-total").textContent = VOCAB.length;
+      document.getElementById("stat-mastered").textContent = store.mastered.length;
+      const totalStars = Object.values(store.stageStars).reduce((a, b) => a + b, 0);
+      document.getElementById("stat-stars").textContent = totalStars;
+      document.getElementById("stat-mistakes").textContent = store.mistakes.length;
+
+      // Mistakes button
+      const revBtn = document.getElementById("btn-review-mistakes");
+      if (store.mistakes.length > 0) {
+        revBtn.style.display = "inline-flex";
+        document.getElementById("mistake-btn-count").textContent = store.mistakes.length;
+      } else {
+        revBtn.style.display = "none";
+      }
+
+      // Resume button
+      const resBtn = document.getElementById("btn-resume-all");
+      if (store.savedAllRun && store.savedAllRun.index < store.savedAllRun.queueIds.length) {
+        resBtn.style.display = "inline-flex";
+        resBtn.textContent = `▶️ เล่นต่อข้อที่ ${store.savedAllRun.index + 1}/280`;
+      } else {
+        resBtn.style.display = "none";
+      }
+
+      // CEFR counts
+      ["A1", "A2", "B1", "B2"].forEach(lv => {
+        const count = VOCAB.filter(v => v.lv === lv).length;
+        document.getElementById(`count-${lv}`).textContent = `${count} คำ`;
+      });
+
+      // Render 14 Stages
+      const grid = document.getElementById("stages-grid");
+      grid.innerHTML = "";
+      for (let s = 1; s <= TOTAL_STAGES; s++) {
+        const start = (s - 1) * STAGE_SIZE;
+        const slice = VOCAB.slice(start, start + STAGE_SIZE);
+        const stars = store.stageStars[s] || 0;
+        const tile = document.createElement("button");
+        tile.className = `stage-tile ${stars > 0 ? "cleared" : ""}`;
+        tile.innerHTML = `
+          <div class="stage-top">
+            <span>ด่านที่ ${s}</span>
+            <span style="font-size:0.78rem;color:var(--pink-dark);">${slice.length} คำ</span>
+          </div>
+          <div class="stage-range">${slice[0].w} – ${slice[slice.length - 1].w}</div>
+          <div class="stage-stars">${"⭐".repeat(stars)}${"☆".repeat(3 - stars)}</div>
+        `;
+        tile.addEventListener("click", () => {
+          startQuiz({
+            items: shuffle(slice),
+            title: `ด่านที่ ${s} (${slice[0].w} – ${slice[slice.length - 1].w})`,
+            stageNum: s
+          });
+        });
+        grid.appendChild(tile);
+      }
+      updateSoundUI();
+    }
+
+    let currentBookFilter = "ALL";
+    function renderBook() {
+      const q = document.getElementById("book-search").value.trim().toLowerCase();
+      const filtered = VOCAB.filter(v => {
+        if (currentBookFilter === "WRONG" && !store.mistakes.includes(v.id)) return false;
+        if (["A1", "A2", "B1", "B2"].includes(currentBookFilter) && v.lv !== currentBookFilter) return false;
+        if (q && !v.w.toLowerCase().includes(q) && !v.th.toLowerCase().includes(q)) return false;
+        return true;
+      });
+      document.getElementById("book-count-label").textContent = `แสดง ${filtered.length} / 280 คำ`;
+      const list = document.getElementById("vocab-list");
+      list.innerHTML = filtered.map(v => {
+        const isMastered = store.mastered.includes(v.id);
+        return `
+          <div class="vocab-item ${isMastered ? "mastered" : ""}">
+            <div class="vocab-left">
+              <div class="vocab-en">
+                <span>${v.id}. ${formatWordDisplay(v.w)}</span>
+                <span class="mini-tag badge-${v.lv}">${v.lv}</span>
+                <span class="mini-tag badge-pos">${v.pos}</span>
+                ${isMastered ? '<span title="จำได้แล้ว">✅</span>' : ''}
+              </div>
+              <div class="vocab-th">${v.th}</div>
+            </div>
+            <button class="speak-btn" style="width:40px;height:40px;font-size:1.05rem;flex-shrink:0;" data-speak-id="${v.id}" title="ฟังเสียง">🔊</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function updateSoundUI() {
+      const lbl = soundEnabled ? "🔊 เสียงเปิด" : "🔇 เสียงปิด";
+      document.getElementById("btn-sound").textContent = lbl;
+      document.getElementById("btn-quiz-sound").textContent = soundEnabled ? "🔊" : "🔇";
+    }
+
+    // =========================================================================
+    // 8. EVENT LISTENERS & KEYBOARD SHORTCUTS (iPad Touch + Magic Keyboard!)
+    // =========================================================================
+    document.getElementById("btn-play-all-shuffle").addEventListener("click", () => {
+      startQuiz({
+        items: shuffle(VOCAB),
+        title: "โหมดครบทั้ง 280 คำ (สุ่ม)",
+        isAllMode: true
+      });
+    });
+
+    document.getElementById("btn-play-all-az").addEventListener("click", () => {
+      startQuiz({
+        items: VOCAB.slice(),
+        title: "โหมดครบทั้ง 280 คำ (A–Z)",
+        isAllMode: true
+      });
+    });
+
+    document.getElementById("btn-resume-all").addEventListener("click", () => {
+      if (store.savedAllRun) {
+        startQuiz({ items: [VOCAB[0]], title: store.savedAllRun.modeTitle, isAllMode: true, resumeData: store.savedAllRun });
+      }
+    });
+
+    document.getElementById("btn-review-mistakes").addEventListener("click", () => {
+      const items = store.mistakes.map(id => VOCAB_BY_ID[id]).filter(Boolean);
+      if (items.length > 0) {
+        startQuiz({ items: shuffle(items), title: `ทบทวนคำที่ตอบผิด (${items.length} คำ)` });
+      }
+    });
+
+    document.querySelectorAll(".cefr-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lv = btn.dataset.cefr;
+        const items = VOCAB.filter(v => v.lv === lv);
+        startQuiz({ items: shuffle(items), title: `คำศัพท์ระดับ ${lv} (${items.length} คำ)` });
+      });
+    });
+
+    document.querySelectorAll("#choices-grid .choice-btn").forEach(btn => {
+      btn.addEventListener("click", () => handleAnswer(Number(btn.dataset.idx)));
+    });
+
+    document.getElementById("btn-next").addEventListener("click", () => {
+      if (!quiz) return;
+      clearTimeout(autoNextTimer);
+      quiz.index++;
+      renderQuestion();
+    });
+
+    document.getElementById("btn-speak").addEventListener("click", () => {
+      if (quiz && quiz.queue[quiz.index]) speakWord(quiz.queue[quiz.index]);
+    });
+
+    document.getElementById("btn-quiz-home").addEventListener("click", () => {
+      showScreen("screen-home");
+      renderHome();
+    });
+
+    document.getElementById("btn-res-home").addEventListener("click", () => {
+      showScreen("screen-home");
+      renderHome();
+    });
+
+    document.getElementById("btn-res-replay").addEventListener("click", () => {
+      startQuiz({
+        items: shuffle(quiz.queue),
+        title: quiz.title,
+        stageNum: quiz.stageNum,
+        isAllMode: quiz.isAllMode
+      });
+    });
+
+    document.getElementById("btn-res-retry-wrong").addEventListener("click", () => {
+      const items = quiz.wrongIds.map(id => VOCAB_BY_ID[id]).filter(Boolean);
+      if (items.length > 0) {
+        startQuiz({ items: shuffle(items), title: `ทบทวนคำที่ผิด (${items.length} คำ)` });
+      }
+    });
+
+    document.getElementById("btn-res-next-stage").addEventListener("click", () => {
+      const nextStage = quiz.stageNum + 1;
+      const start = (nextStage - 1) * STAGE_SIZE;
+      const slice = VOCAB.slice(start, start + STAGE_SIZE);
+      startQuiz({
+        items: shuffle(slice),
+        title: `ด่านที่ ${nextStage} (${slice[0].w} – ${slice[slice.length - 1].w})`,
+        stageNum: nextStage
+      });
+    });
+
+    // Sound & Auto-Next toggles
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      store.sound = soundEnabled;
+      saveStore();
+      updateSoundUI();
+    }
+    document.getElementById("btn-sound").addEventListener("click", toggleSound);
+    document.getElementById("btn-quiz-sound").addEventListener("click", toggleSound);
+
+    const chkAuto = document.getElementById("chk-auto-next");
+    chkAuto.checked = store.autoNext !== false;
+    chkAuto.addEventListener("change", () => {
+      store.autoNext = chkAuto.checked;
+      saveStore();
+    });
+
+    // Vocab Book
+    document.getElementById("btn-open-book").addEventListener("click", () => {
+      showScreen("screen-book");
+      renderBook();
+    });
+    document.getElementById("btn-book-home").addEventListener("click", () => {
+      showScreen("screen-home");
+      renderHome();
+    });
+    document.getElementById("book-search").addEventListener("input", renderBook);
+    document.querySelectorAll("[data-bfilter]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentBookFilter = btn.dataset.bfilter;
+        renderBook();
+      });
+    });
+    document.getElementById("vocab-list").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-speak-id]");
+      if (b) {
+        const item = VOCAB_BY_ID[Number(b.dataset.speakId)];
+        if (item) speakWord(item);
+      }
+    });
+
+    // iPad Fullscreen Guide & Browser Fullscreen API
+    const modalIpad = document.getElementById("modal-ipad");
+    document.getElementById("btn-ipad-guide").addEventListener("click", () => modalIpad.classList.add("open"));
+    document.getElementById("btn-close-ipad").addEventListener("click", () => modalIpad.classList.remove("open"));
+    modalIpad.addEventListener("click", (e) => { if (e.target === modalIpad) modalIpad.classList.remove("open"); });
+
+    document.getElementById("btn-fullscreen").addEventListener("click", () => {
+      const el = document.documentElement;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (el.requestFullscreen) el.requestFullscreen().catch(() => modalIpad.classList.add("open"));
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else modalIpad.classList.add("open");
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    });
+
+    // Reset stats
+    document.getElementById("btn-reset-progress").addEventListener("click", () => {
+      if (confirm("ต้องการรีเซ็ตดาวและสถิติทั้งหมดใช่ไหม?")) {
+        store = defaultStore();
+        saveStore();
+        renderHome();
+      }
+    });
+
+    // Keyboard support (a, b, c, d & Enter / Space)
+    window.addEventListener("keydown", (e) => {
+      if (!document.getElementById("screen-quiz").classList.contains("active")) return;
+      const k = e.key.toLowerCase();
+      if (["a", "b", "c", "d"].includes(k)) {
+        handleAnswer(["a", "b", "c", "d"].indexOf(k));
+      } else if ((k === "enter" || k === " ") && quiz && quiz.answered) {
+        e.preventDefault();
+        clearTimeout(autoNextTimer);
+        quiz.index++;
+        renderQuestion();
+      }
+    });
+
+    // Show helpful iPad full-screen banner automatically on iPad/iOS Safari when not in standalone mode
+    (function checkIpadBanner() {
+      const ua = navigator.userAgent || "";
+      const isIPadOrIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      const isStandalone = window.navigator.standalone === true || window.matchMedia("(display-mode: fullscreen)").matches || window.matchMedia("(display-mode: standalone)").matches;
+      const banner = document.getElementById("ipad-banner");
+      if (isIPadOrIOS && !isStandalone && banner) {
+        banner.classList.add("show");
+      }
+      const dismissBtn = document.getElementById("btn-dismiss-banner");
+      if (dismissBtn && banner) {
+        dismissBtn.addEventListener("click", () => banner.classList.remove("show"));
+      }
+    })();
+
+    // Init
+    initAppleTouchIcon();
+    renderHome();
+  </script>
+</body>
+</html>

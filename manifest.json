@@ -1,0 +1,18 @@
+{
+  "name": "Mochi Vocab Quest — เกม Quiz คำศัพท์จิบิ 280 คำ",
+  "short_name": "Chibi Vocab",
+  "description": "เกมส์ Quiz ทายความหมายภาษาไทยสไตล์จิบิน่ารัก ครบทั้ง 280 คำศัพท์ (A1-B2) สำหรับ iPad เต็มจอ",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#FFF6FA",
+  "theme_color": "#FF8FB1",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

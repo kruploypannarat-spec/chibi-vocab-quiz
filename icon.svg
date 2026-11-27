@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE4F0"/>
+      <stop offset="50%" stop-color="#FFF5E6"/>
+      <stop offset="100%" stop-color="#E3F4FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <!-- Sparkles -->
+  <path d="M44 48 L48 36 L52 48 L64 52 L52 56 L48 68 L44 56 L32 52 Z" fill="#FFD166"/>
+  <path d="M206 54 L209 45 L212 54 L221 57 L212 60 L209 69 L206 60 L197 57 Z" fill="#FF8FB1"/>
+  <circle cx="204" cy="196" r="7" fill="#7BDFF2"/>
+  <circle cx="52" cy="192" r="6" fill="#B8F2E6"/>
+  <!-- Chibi Head -->
+  <g stroke="#5A3E4B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Twin buns -->
+    <circle cx="68" cy="84" r="26" fill="#7D5260"/>
+    <circle cx="188" cy="84" r="26" fill="#7D5260"/>
+    <!-- Ribbons -->
+    <ellipse cx="82" cy="96" rx="14" ry="9" transform="rotate(-25 82 96)" fill="#FF8FB1"/>
+    <ellipse cx="174" cy="96" rx="14" ry="9" transform="rotate(25 174 96)" fill="#FF8FB1"/>
+    <!-- Back hair -->
+    <ellipse cx="128" cy="134" rx="68" ry="62" fill="#7D5260"/>
+    <!-- Sailor collar / shoulders -->
+    <path d="M84 196 Q128 176 172 196 L182 232 Q128 242 74 232 Z" fill="#89CFF0"/>
+    <path d="M110 192 L128 216 L146 192" fill="#FFFFFF"/>
+    <circle cx="128" cy="212" r="9" fill="#FF6B9D"/>
+    <!-- Face -->
+    <ellipse cx="128" cy="136" rx="56" ry="50" fill="#FFE6D9"/>
+    <!-- Bangs -->
+    <path d="M72 124 Q84 74 128 74 Q172 74 184 124 Q166 102 150 116 Q138 98 128 116 Q116 98 104 116 Q88 102 72 124 Z" fill="#7D5260"/>
+    <!-- Star clip -->
+    <path d="M90 100 L93 92 L96 100 L104 103 L96 106 L93 114 L90 106 L82 103 Z" fill="#FFD166" stroke-width="3.5"/>
+  </g>
+  <!-- Eyes -->
+  <ellipse cx="104" cy="140" rx="11" ry="14" fill="#3D2631"/>
+  <ellipse cx="152" cy="140" rx="11" ry="14" fill="#3D2631"/>
+  <circle cx="100" cy="135" r="4.5" fill="#FFFFFF"/>
+  <circle cx="148" cy="135" r="4.5" fill="#FFFFFF"/>
+  <circle cx="108" cy="146" r="2.2" fill="#FFD1E3"/>
+  <circle cx="156" cy="146" r="2.2" fill="#FFD1E3"/>
+  <!-- Blush -->
+  <ellipse cx="86" cy="154" rx="10" ry="6" fill="#FF9EBB" opacity="0.7"/>
+  <ellipse cx="170" cy="154" rx="10" ry="6" fill="#FF9EBB" opacity="0.7"/>
+  <!-- Smile -->
+  <path d="M120 156 Q128 166 136 156" fill="none" stroke="#5A3E4B" stroke-width="4.5" stroke-linecap="round"/>
+</svg>
